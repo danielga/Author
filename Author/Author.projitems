@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>7458feb6-328f-4b02-96da-afd2009424ac</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Author</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Database\Filesystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\Authy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\BlizzardApp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\Entry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\EntryManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\Factory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\HashBased.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\IBaseGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\Secret.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\Steam.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OTP\TimeBased.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\AddEntryPage.xaml.cs">
+      <DependentUpon>AddEntryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\ExtendedSlider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\MainPageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\AddEntryPageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\ViewModelLocator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Base32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Hexadecimal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Time.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\AddEntryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

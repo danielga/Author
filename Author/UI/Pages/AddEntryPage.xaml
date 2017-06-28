@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+  xmlns="http://xamarin.com/schemas/2014/forms"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+  xmlns:vm="clr-namespace:Author.UI.ViewModels"
+  xmlns:pages="clr-namespace:Author.UI.Pages"
+  x:Class="Author.UI.Pages.AddEntryPage"
+  x:Name="AddEntry"
+  BindingContext="{x:Static vm:ViewModelLocator.AddEntryPageVM}"
+  Icon="Icon.png"
+  Title="Add OTP entry">
+  <ContentPage.ToolbarItems>
+    <ToolbarItem
+      Icon="Accept.png"
+      Text="Accept"
+      Order="Primary"
+      Activated="OnAcceptTapped" />
+  </ContentPage.ToolbarItems>
+  <ScrollView>
+    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
+      <Label
+        Text="Type"
+        Margin="5"
+        HorizontalOptions="Start"
+        VerticalOptions="Center" />
+      <Picker Margin="5" SelectedIndex="{Binding TypeIndex}">
+        <Picker.Items>
+          <x:String>Hash based</x:String>
+          <x:String>Time based</x:String>
+          <x:String>Steam</x:String>
+          <x:String>Blizzard App</x:String>
+          <x:String>Authy</x:String>
+        </Picker.Items>
+      </Picker>
+
+      <Label
+        Text="Name"
+        Margin="5"
+        HorizontalOptions="Start"
+        VerticalOptions="Center" />
+      <Entry
+        Margin="5"
+        HorizontalOptions="FillAndExpand"
+        Placeholder="Name"
+        Text="{Binding Name}" />
+
+      <Label
+        Text="Shared secret"
+        Margin="5"
+        HorizontalOptions="Start" />
+      <Entry
+        Margin="5"
+        HorizontalOptions="FillAndExpand"
+        Placeholder="Shared secret"
+        Text="{Binding Secret}" />
+
+      <Label Text="Code length" Margin="5" HorizontalOptions="Start" />
+      <Picker Margin="5" SelectedIndex="{Binding LengthIndex}">
+        <Picker.Items>
+          <x:String>4</x:String>
+          <x:String>5</x:String>
+          <x:String>6</x:String>
+          <x:String>7</x:String>
+          <x:String>8</x:String>
+        </Picker.Items>
+      </Picker>
+
+      <Label
+        Text="{Binding Period, StringFormat='Timer period: {0} seconds'}"
+        Margin="5"
+        HorizontalOptions="Start" />
+      <pages:ExtendedSlider
+        x:Name="PeriodSlider"
+        Margin="5"
+        Maximum="60"
+        Minimum="1"
+        HorizontalOptions="FillAndExpand"
+        Value="{Binding Period, Mode=TwoWay}" />
+    </StackLayout>
+  </ScrollView>
+</ContentPage>

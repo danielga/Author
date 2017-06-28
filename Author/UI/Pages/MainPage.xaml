@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+  xmlns="http://xamarin.com/schemas/2014/forms"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+  xmlns:vm="clr-namespace:Author.UI.ViewModels"
+  xmlns:pages="clr-namespace:Author.UI.Pages"
+  x:Class="Author.UI.Pages.MainPage"
+  BindingContext="{x:Static vm:ViewModelLocator.MainPageVM}"
+  Icon="Icon.png"
+  Title="Author">
+  <ContentPage.ToolbarItems>
+    <ToolbarItem
+      Icon="Add.png"
+      Text="Add OTP entry"
+      Order="Primary"
+      Activated="OnAddTapped" />
+    <ToolbarItem
+      Icon="Settings.png"
+      Text="Settings"
+      Order="Secondary"
+      Activated="OnSettingsTapped" />
+    <ToolbarItem
+      Icon="About.png"
+      Text="About"
+      Order="Secondary"
+      Activated="OnAboutTapped" />
+  </ContentPage.ToolbarItems>
+  <ListView
+    HorizontalOptions="FillAndExpand"
+    CachingStrategy="RecycleElement"
+    ItemsSource="{Binding EntriesList}"
+    ItemSelected="OnItemSelected"
+    ItemAppearing="OnItemAppearing"
+    ItemDisappearing="OnItemDisappearing">
+  <ListView.ItemTemplate>
+    <DataTemplate>
+      <ViewCell>
+        <ViewCell.ContextActions>
+          <MenuItem
+            Clicked="OnItemEdit"
+            Text="Edit" />
+          <MenuItem
+            Clicked="OnItemDelete"
+            Text="Delete"
+            IsDestructive="True" />
+        </ViewCell.ContextActions>
+        <Grid Padding="5">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            Text="{Binding Name}" />
+          <Label
+            Grid.Row="0"
+            Grid.Column="1"
+            Text="{Binding Code}" />
+          <ProgressBar
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Progress="{Binding Progress}" />
+          </Grid>
+        </ViewCell>
+      </DataTemplate>
+    </ListView.ItemTemplate>
+  </ListView>
+</ContentPage>
