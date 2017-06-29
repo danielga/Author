@@ -1,6 +1,7 @@
 ﻿using System.Resources;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Xamarin.Forms.Xaml;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -40,3 +41,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("0.1.0.0")]
 [assembly: NeutralResourcesLanguage("en")]
 
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]

@@ -118,6 +118,7 @@ Global
 		{9DACD30C-23BD-407D-BBF3-25C095E3B83B}.Release|x86.Build.0 = Release|Any CPU
 		{9DACD30C-23BD-407D-BBF3-25C095E3B83B}.Release|x86.Deploy.0 = Release|Any CPU
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.Ad-Hoc|Any CPU.ActiveCfg = Ad-Hoc|iPhone
+		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.Ad-Hoc|Any CPU.Build.0 = Ad-Hoc|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.Ad-Hoc|ARM.ActiveCfg = Ad-Hoc|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
@@ -126,6 +127,7 @@ Global
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.Ad-Hoc|x64.ActiveCfg = Ad-Hoc|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.Ad-Hoc|x86.ActiveCfg = Ad-Hoc|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.AppStore|Any CPU.ActiveCfg = AppStore|iPhone
+		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.AppStore|Any CPU.Build.0 = AppStore|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.AppStore|ARM.ActiveCfg = AppStore|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
 		{9886C01E-11EB-4467-931C-B4E58C9BEF42}.AppStore|iPhone.Build.0 = AppStore|iPhone

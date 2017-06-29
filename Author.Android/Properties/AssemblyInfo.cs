@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using Android.App;
+using Xamarin.Forms.Xaml;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -9,8 +10,10 @@ using Android.App;
 [assembly: AssemblyDescription("A 2FA cross-platform application.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
+[assembly: Application(Debuggable = true)]
 #else
 [assembly: AssemblyConfiguration("Release")]
+[assembly: Application(Debuggable = false)]
 #endif
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Author")]
@@ -34,3 +37,5 @@ using Android.App;
 
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
+
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
