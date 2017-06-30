@@ -178,12 +178,12 @@ namespace Author.OTP
             info.AddValue("SecretData", _secretData, typeof(string));
         }
 
-        public void UpdateCode(long timestamp)
+        public void UpdateCode(long timestamp, bool force = false)
         {
             int progress = (int)(timestamp % _period);
             Progress = progress / (double)_period;
 
-            if (timestamp < NextUpdate)
+            if (!force && timestamp < NextUpdate)
                 return;
 
             Code = _generator.GetCode(timestamp, _digits, _period);

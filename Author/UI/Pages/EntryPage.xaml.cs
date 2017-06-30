@@ -1,5 +1,6 @@
 ﻿using Author.OTP;
 using Author.UI.ViewModels;
+using Author.Utility;
 using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
@@ -37,6 +38,7 @@ namespace Author.UI.Pages
                 entry.Period = (byte)_entryPageVM.Period;
                 entry.SecretData = _entryPageVM.Secret;
                 entry.UpdateData();
+                entry.UpdateCode(Time.GetCurrent(), true);
 
                 _entryPageVM.Reset();
             }
