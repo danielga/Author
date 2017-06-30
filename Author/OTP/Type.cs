@@ -4,13 +4,13 @@ namespace Author.OTP
 {
     public static class Type
     {
-        public const int Hash = 0;
-        public const int Time = 1;
-        public const int Steam = 2;
-        public const int Blizzard = 3;
-        public const int Authy = 4;
+        public const byte Hash = 0;
+        public const byte Time = 1;
+        public const byte Steam = 2;
+        public const byte Blizzard = 3;
+        public const byte Authy = 4;
 
-        public static readonly Dictionary<string, int> FromName = new Dictionary<string, int>
+        public static readonly Dictionary<string, byte> FromName = new Dictionary<string, byte>
         {
             { "hash", Hash },
             { "time", Time },
@@ -19,7 +19,7 @@ namespace Author.OTP
             { "authy", Authy }
         };
 
-        public static readonly Dictionary<int, string> Name = new Dictionary<int, string>
+        public static readonly Dictionary<byte, string> Name = new Dictionary<byte, string>
         {
             { Hash, "hash" },
             { Time, "time" },

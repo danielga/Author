@@ -36,7 +36,8 @@ namespace Author.OTP
 
         public EntryManager()
         {
-            Task.Run(async () => {
+            Task.Run(async () =>
+            {
                 try
                 {
                     ObservableCollection<Entry> entries =
@@ -44,7 +45,7 @@ namespace Author.OTP
                     if (entries != null)
                         Entries = entries;
                 }
-                catch(Exception)
+                catch (Exception)
                 { }
 
                 // TODO: Check if collection changes can happen before this is executed

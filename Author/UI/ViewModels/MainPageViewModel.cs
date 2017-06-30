@@ -20,8 +20,12 @@ namespace Author.UI.ViewModels
 
             internal set
             {
+                bool changed = _entriesList != value;
+
                 _entriesList = value;
-                OnPropertyChanged();
+
+                if (changed)
+                    OnPropertyChanged();
             }
         }
 
@@ -38,7 +42,7 @@ namespace Author.UI.ViewModels
             {
                 Entry entry = new Entry(new Secret
                 {
-                    Type = "time",
+                    Type = OTP.Type.Time,
                     Name = "Hello world " + i,
                     Digits = (byte)(4 + i),
                     Period = (byte)(30 + (i - 2) * 5),

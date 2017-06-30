@@ -2,8 +2,8 @@
 {
     public struct Secret
     {
+        public byte Type;
         public string Name;
-        public string Type;
         public byte Digits;
         public byte Period;
         public string Data;

@@ -59,8 +59,8 @@ namespace Author.OTP
             }
         }
 
-        string _type = null;
-        public string Type
+        byte _type = 0;
+        public byte Type
         {
             get { return _type; }
 
@@ -160,7 +160,7 @@ namespace Author.OTP
 
         public Entry(SerializationInfo info, StreamingContext context)
         {
-            Type = (string)info.GetValue("Type", typeof(string));
+            Type = (byte)info.GetValue("Type", typeof(byte));
             Name = (string)info.GetValue("Name", typeof(string));
             Digits = (byte)info.GetValue("Digits", typeof(byte));
             Period = (byte)info.GetValue("Period", typeof(byte));
@@ -171,7 +171,7 @@ namespace Author.OTP
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("Type", _type, typeof(string));
+            info.AddValue("Type", _type, typeof(byte));
             info.AddValue("Name", _name, typeof(string));
             info.AddValue("Digits", _digits, typeof(byte));
             info.AddValue("Period", _period, typeof(byte));

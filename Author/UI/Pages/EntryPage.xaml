@@ -54,7 +54,10 @@
         Text="{Binding Secret, Mode=TwoWay}" />
 
       <Label Text="Code length" Margin="5" HorizontalOptions="Start" />
-      <Picker Margin="5" SelectedIndex="{Binding LengthIndex, Mode=TwoWay}">
+      <Picker
+        x:Name="LengthPicker"
+        Margin="5"
+        SelectedIndex="{Binding LengthIndex, Mode=TwoWay}">
         <Picker.Items>
           <x:String>4</x:String>
           <x:String>5</x:String>

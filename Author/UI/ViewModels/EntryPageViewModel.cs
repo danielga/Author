@@ -18,7 +18,7 @@ namespace Author.UI.ViewModels
 
                 if (value != null)
                 {
-                    Type = OTP.Type.FromName[value.Type];
+                    Type = value.Type;
                     Name = value.Name;
                     Length = value.Digits;
                     Period = value.Period;
@@ -27,15 +27,19 @@ namespace Author.UI.ViewModels
             }
         }
 
-        int _type = OTP.Type.Time;
-        public int Type
+        byte _type = OTP.Type.Time;
+        public byte Type
         {
             get { return _type; }
 
             set
             {
+                bool changed = _type != value;
+
                 _type = value;
-                OnPropertyChanged();
+
+                if (changed)
+                    OnPropertyChanged();
             }
         }
 
@@ -46,8 +50,12 @@ namespace Author.UI.ViewModels
 
             set
             {
+                bool changed = _name != value;
+
                 _name = value;
-                OnPropertyChanged();
+
+                if (changed)
+                    OnPropertyChanged();
             }
         }
 
@@ -59,8 +67,12 @@ namespace Author.UI.ViewModels
 
             set
             {
+                bool changed = _lengthIndex != value;
+
                 _lengthIndex = value;
-                OnPropertyChanged();
+
+                if (changed)
+                    OnPropertyChanged();
             }
         }
 
@@ -71,7 +83,13 @@ namespace Author.UI.ViewModels
             set
             {
                 Debug.Assert(value >= 4 && value <= 8, "OTP length is invalid");
+
+                bool changed = Length != value;
+
                 LengthIndex = value - PasswordLengthDifference;
+
+                if (changed)
+                    OnPropertyChanged();
             }
         }
 
@@ -82,8 +100,12 @@ namespace Author.UI.ViewModels
 
             set
             {
+                bool changed = _period != value;
+
                 _period = value;
-                OnPropertyChanged();
+
+                if (changed)
+                    OnPropertyChanged();
             }
         }
 
@@ -94,8 +116,12 @@ namespace Author.UI.ViewModels
 
             set
             {
+                bool changed = _secret != value;
+
                 _secret = value;
-                OnPropertyChanged();
+
+                if (changed)
+                    OnPropertyChanged();
             }
         }
 
