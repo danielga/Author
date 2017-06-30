@@ -43,6 +43,8 @@ namespace Author.UI.Pages
 
         void OnAddTapped(object sender, EventArgs e)
         {
+            _entryPage.Title = "Add OTP entry";
+
             SetPage(_entryPage);
         }
 
@@ -79,6 +81,7 @@ namespace Author.UI.Pages
             MenuItem menuItem = (MenuItem)sender;
             OTP.Entry entry = (OTP.Entry)menuItem.BindingContext;
 
+            _entryPage.Title = "Edit OTP entry";
             ViewModelLocator.EntryPageVM.Entry = entry;
 
             SetPage(_entryPage);
