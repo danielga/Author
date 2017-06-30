@@ -45,7 +45,7 @@ namespace Author.UI.ViewModels
                     Data = new string(Enumerable.Repeat(Chars, 32).Select(s => s[random.Next(s.Length)]).ToArray())
                 });
                 _entriesList.Add(entry);
-                entry.Update(timestamp);
+                entry.UpdateCode(timestamp);
             }
         }
 

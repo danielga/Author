@@ -4,15 +4,13 @@ namespace Author.OTP
 {
     public class TimeBased : HashBased
     {
-        public TimeBased(Secret secret, MacAlgorithm algorithm = MacAlgorithm.HmacSha1)
+        public TimeBased(string secret, MacAlgorithm algorithm = MacAlgorithm.HmacSha1)
             : base(secret, algorithm)
-        {
-            Period = secret.Period;
-        }
+        { }
 
-        public override string GetCode(long timestamp)
+        public override string GetCode(long timestamp, byte digits, byte period)
         {
-            return base.GetCode(timestamp / Period);
+            return base.GetCode(timestamp / period, digits, period);
         }
     }
 }

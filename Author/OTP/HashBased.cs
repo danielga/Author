@@ -9,49 +9,22 @@ namespace Author.OTP
     {
         public const MacAlgorithm DefaultAlgorithm = MacAlgorithm.HmacSha1;
 
-        public string Type { get; set; }
+        protected CryptographicHash Hash = null;
+        protected byte[] SecretBytes = null;
+        protected string SecretData = null;
 
-        public string Name { get; set; }
-
-        public byte Digits { get; set; }
-
-        public byte Period { get; set; }
-
-        public string SecretData
+        public HashBased(string secret, MacAlgorithm algorithm = DefaultAlgorithm)
         {
-            get
-            {
-                return _secretData;
-            }
+            Debug.Assert(!string.IsNullOrEmpty(secret), "Secret is not a valid string!");
 
-            set
-            {
-                _secretData = value;
-                SecretBytes = Base32.Decode(value);
-                IMacAlgorithmProvider provider =
-                    WinRTCrypto.MacAlgorithmProvider.OpenAlgorithm(Algorithm);
-                Hash = provider.CreateHash(SecretBytes);
-            }
+            SecretData = secret;
+            SecretBytes = Base32.Decode(secret);
+            IMacAlgorithmProvider provider =
+                WinRTCrypto.MacAlgorithmProvider.OpenAlgorithm(algorithm);
+            Hash = provider.CreateHash(SecretBytes);
         }
 
-        protected MacAlgorithm Algorithm = DefaultAlgorithm;
-        protected CryptographicHash Hash;
-        protected byte[] SecretBytes;
-        string _secretData = null;
-
-        public HashBased(Secret secret, MacAlgorithm algorithm = DefaultAlgorithm)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(secret.Data), "Secret is not a valid string!");
-
-            Name = secret.Name;
-            Type = secret.Type;
-            Digits = secret.Digits;
-            Period = 0;
-            Algorithm = algorithm;
-            SecretData = secret.Data;
-        }
-
-        public virtual string GetCode(long counter)
+        public virtual string GetCode(long counter, byte digits, byte period)
         {
             byte[] ts = BitConverter.GetBytes(counter);
             ts[4] = ts[3];
@@ -71,8 +44,8 @@ namespace Author.OTP
                 hash[offset + 1] << 16 |
                 hash[offset + 2] << 8 |
                 hash[offset + 3];
-            int otp = (binary & 0x7FFFFFFF) % (int)Math.Pow(10, Digits);
-            return otp.ToString().PadLeft(Digits, '0');
+            int otp = (binary & 0x7FFFFFFF) % (int)Math.Pow(10, digits);
+            return otp.ToString().PadLeft(digits, '0');
         }
     }
 }

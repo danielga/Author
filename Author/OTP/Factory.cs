@@ -5,8 +5,8 @@ namespace Author.OTP
 {
     public static class Factory
     {
-        static readonly Dictionary<string, Func<Secret, IBaseGenerator>> Constructors = new Dictionary
-            <string, Func<Secret, IBaseGenerator>>
+        static readonly Dictionary<string, Func<string, IBaseGenerator>> Constructors = new Dictionary
+            <string, Func<string, IBaseGenerator>>
         {
             {"hash", secret => new HashBased(secret)},
             {"time", secret => new TimeBased(secret)},
@@ -15,10 +15,10 @@ namespace Author.OTP
             {"authy", secret => new Authy(secret)}
         };
 
-        public static IBaseGenerator CreateGenerator(Secret secret)
+        public static IBaseGenerator CreateGenerator(string type, string secret)
         {
-            Func<Secret, IBaseGenerator> constructor;
-            return Constructors.TryGetValue(secret.Type.ToLowerInvariant(), out constructor)
+            Func<string, IBaseGenerator> constructor;
+            return Constructors.TryGetValue(type.ToLowerInvariant(), out constructor)
                 ? constructor(secret)
                 : null;
         }

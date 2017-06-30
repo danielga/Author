@@ -10,7 +10,7 @@ namespace Author.UI.Pages
     {
         readonly EntryManager _entryManager = new EntryManager();
 
-        readonly AddEntryPage _addEntryPage = new AddEntryPage();
+        readonly EntryPage _entryPage = new EntryPage();
         readonly SettingsPage _settingsPage = new SettingsPage();
         readonly AboutPage _aboutPage = new AboutPage();
 
@@ -43,7 +43,7 @@ namespace Author.UI.Pages
 
         void OnAddTapped(object sender, EventArgs e)
         {
-            SetPage(_addEntryPage);
+            SetPage(_entryPage);
         }
 
         void OnSettingsTapped(object sender, EventArgs e)
@@ -78,6 +78,10 @@ namespace Author.UI.Pages
         {
             MenuItem menuItem = (MenuItem)sender;
             OTP.Entry entry = (OTP.Entry)menuItem.BindingContext;
+
+            ViewModelLocator.EntryPageVM.Entry = entry;
+
+            SetPage(_entryPage);
         }
 
         void OnItemDelete(object sender, EventArgs e)

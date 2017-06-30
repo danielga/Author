@@ -57,21 +57,11 @@ namespace Author.OTP
             Task.Run(async () => await Filesystem.SaveToPath(EntriesPath, Entries));
         }
 
-        public void AddEntry(Secret secret)
-        {
-            Entries.Add(new Entry(secret));
-        }
-
-        public bool RemoveEntry(Entry entry)
-        {
-            return Entries.Remove(entry);
-        }
-
         bool UpdateEntries()
         {
             long timestamp = Time.GetCurrent();
             foreach (Entry entry in _visibleEntries)
-                entry.Update(timestamp);
+                entry.UpdateCode(timestamp);
 
             return _shouldUpdate;
         }
@@ -93,7 +83,7 @@ namespace Author.OTP
             if (entry == null)
                 return;
 
-            entry.Update(Time.GetCurrent());
+            entry.UpdateCode(Time.GetCurrent());
             _visibleEntries.Add(entry);
         }
 

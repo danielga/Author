@@ -15,21 +15,13 @@ namespace Author.OTP
             'R', 'T', 'V', 'W', 'X', 'Y'
         };
 
-        public Steam(Secret secret)
-            : base(
-                new Secret
-                {
-                    Name = secret.Name,
-                    Type = secret.Type,
-                    Digits = DefaultDigits,
-                    Period = DefaultPeriod,
-                    Data = secret.Data
-                })
+        public Steam(string secret)
+            : base(secret)
         { }
 
-        public override string GetCode(long timestamp)
+        public override string GetCode(long timestamp, byte digits, byte period)
         {
-            byte[] ts = BitConverter.GetBytes(timestamp / Period);
+            byte[] ts = BitConverter.GetBytes(timestamp / DefaultPeriod);
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(ts);
 
@@ -44,7 +36,7 @@ namespace Author.OTP
 
             uint fullcode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
             StringBuilder code = new StringBuilder();
-            for (int i = 0; i < Digits; ++i)
+            for (int i = 0; i < DefaultDigits; ++i)
             {
                 code.Append(Characters[fullcode % Characters.Length]);
                 fullcode /= (uint)Characters.Length;

@@ -5,16 +5,13 @@
         public const byte DefaultDigits = 7;
         public const byte DefaultPeriod = 10;
 
-        public Authy(Secret secret)
-            : base(
-                new Secret
-                {
-                    Name = secret.Name,
-                    Type = secret.Type,
-                    Digits = DefaultDigits,
-                    Period = DefaultPeriod,
-                    Data = secret.Data
-                })
+        public Authy(string secret)
+            : base(secret)
         { }
+
+        public override string GetCode(long timestamp, byte digits, byte period)
+        {
+            return base.GetCode(timestamp, DefaultDigits, DefaultPeriod);
+        }
     }
 }

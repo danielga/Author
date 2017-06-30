@@ -2,15 +2,15 @@
 {
     public static class ViewModelLocator
     {
-        static AddEntryPageViewModel _addEntryPageVM;
-        public static AddEntryPageViewModel AddEntryPageVM => _addEntryPageVM;
+        static EntryPageViewModel _entryPageVM;
+        public static EntryPageViewModel EntryPageVM => _entryPageVM;
 
         static MainPageViewModel _mainPageVM;
         public static MainPageViewModel MainPageVM => _mainPageVM;
 
         static ViewModelLocator()
         {
-            _addEntryPageVM = new AddEntryPageViewModel();
+            _entryPageVM = new EntryPageViewModel();
             _mainPageVM = new MainPageViewModel();
         }
     }
