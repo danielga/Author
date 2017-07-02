@@ -15,8 +15,6 @@ namespace Author.OTP
 
         public HashBased(string secret, MacAlgorithm algorithm = DefaultAlgorithm)
         {
-            Debug.Assert(!string.IsNullOrEmpty(secret), "Secret is not a valid string!");
-
             SecretData = secret;
             SecretBytes = Base32.Decode(secret);
             IMacAlgorithmProvider provider =

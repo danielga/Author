@@ -39,7 +39,10 @@ namespace Author.UI.ViewModels
                 _type = value;
 
                 if (changed)
+                {
                     OnPropertyChanged();
+                    Factory.SetupEntryPage(value, this);
+                }
             }
         }
 
@@ -119,6 +122,54 @@ namespace Author.UI.ViewModels
                 bool changed = _secret != value;
 
                 _secret = value;
+
+                if (changed)
+                    OnPropertyChanged();
+            }
+        }
+
+        string _title = "Add OTP entry";
+        public string Title
+        {
+            get { return _title; }
+
+            set
+            {
+                bool changed = _title != value;
+
+                _title = value;
+
+                if (changed)
+                    OnPropertyChanged();
+            }
+        }
+
+        bool _lengthPickerEnabled = true;
+        public bool LengthPickerEnabled
+        {
+            get { return _lengthPickerEnabled; }
+
+            set
+            {
+                bool changed = _lengthPickerEnabled != value;
+
+                _lengthPickerEnabled = value;
+
+                if (changed)
+                    OnPropertyChanged();
+            }
+        }
+
+        bool _periodSliderEnabled = true;
+        public bool PeriodSliderEnabled
+        {
+            get { return _periodSliderEnabled; }
+
+            set
+            {
+                bool changed = _periodSliderEnabled != value;
+
+                _periodSliderEnabled = value;
 
                 if (changed)
                     OnPropertyChanged();

@@ -7,7 +7,7 @@
   x:Class="Author.UI.Pages.EntryPage"
   BindingContext="{x:Static vm:ViewModelLocator.EntryPageVM}"
   Icon="Icon.png"
-  Title="Add OTP entry">
+  Title="{Binding Title}">
   <ContentPage.ToolbarItems>
     <ToolbarItem
       Icon="Accept.png"
@@ -55,7 +55,7 @@
 
       <Label Text="Code length" Margin="5" HorizontalOptions="Start" />
       <Picker
-        x:Name="LengthPicker"
+        IsEnabled="{Binding LengthPickerEnabled}"
         Margin="5"
         SelectedIndex="{Binding LengthIndex, Mode=TwoWay}">
         <Picker.Items>
@@ -72,7 +72,7 @@
         Margin="5"
         HorizontalOptions="Start" />
       <pages:ExtendedSlider
-        x:Name="PeriodSlider"
+        IsEnabled="{Binding PeriodSliderEnabled}"
         Margin="5"
         Maximum="60"
         Minimum="1"

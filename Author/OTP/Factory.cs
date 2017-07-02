@@ -1,5 +1,4 @@
-﻿using Author.UI.Pages;
-using Author.UI.ViewModels;
+﻿using Author.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 
@@ -17,33 +16,48 @@ namespace Author.OTP
             {Type.Authy, secret => new Authy(secret)}
         };
 
-        static readonly Dictionary<byte, Action<EntryPage>> EntryPageSetups =
-            new Dictionary<byte, Action<EntryPage>>
+        static readonly Dictionary<byte, Action<EntryPageViewModel>> EntryPageSetups =
+            new Dictionary<byte, Action<EntryPageViewModel>>
         {
-            {Type.Hash, page =>
+            {Type.Hash, vm =>
             {
-                page.UnlockLengthPicker();
-                page.LockPeriodSlider();
+                vm.Length = 6;
+                vm.LengthPickerEnabled = true;
+
+                vm.Period = 30;
+                vm.PeriodSliderEnabled = false;
             }},
-            {Type.Time, page =>
+            {Type.Time, vm =>
             {
-                page.UnlockLengthPicker();
-                page.UnlockPeriodSlider();
+                vm.Length = 6;
+                vm.LengthPickerEnabled = true;
+
+                vm.Period = 30;
+                vm.PeriodSliderEnabled = true;
             }},
-            {Type.Steam, page =>
+            {Type.Steam, vm =>
             {
-                page.LockLengthPicker(5);
-                page.LockPeriodSlider(30);
+                vm.Length = 5;
+                vm.LengthPickerEnabled = false;
+
+                vm.Period = 30;
+                vm.PeriodSliderEnabled = false;
             }},
-            {Type.Blizzard, page =>
+            {Type.Blizzard, vm =>
             {
-                page.LockLengthPicker(8);
-                page.LockPeriodSlider(30);
+                vm.Length = 8;
+                vm.LengthPickerEnabled = false;
+
+                vm.Period = 30;
+                vm.PeriodSliderEnabled = false;
             }},
-            {Type.Authy, page =>
+            {Type.Authy, vm =>
             {
-                page.LockLengthPicker(7);
-                page.LockPeriodSlider(10);
+                vm.Length = 7;
+                vm.LengthPickerEnabled = false;
+
+                vm.Period = 10;
+                vm.PeriodSliderEnabled = false;
             }}
         };
 
@@ -55,11 +69,11 @@ namespace Author.OTP
                 : null;
         }
 
-        public static void SetupEntryPage(byte type, EntryPage page)
+        public static void SetupEntryPage(byte type, EntryPageViewModel vm)
         {
-            Action<EntryPage> setup = null;
+            Action<EntryPageViewModel> setup = null;
             if (EntryPageSetups.TryGetValue(type, out setup))
-                setup(page);
+                setup(vm);
         }
     }
 }
