@@ -2,13 +2,20 @@
 using System.Runtime.CompilerServices;
 using Author.OTP;
 using System.Diagnostics;
+using System;
+using System.Collections.ObjectModel;
+using Author.Utility;
+using Xamarin.Forms;
+using Author.UI.Pages;
 
 namespace Author.UI.ViewModels
 {
     public class EntryPageViewModel : INotifyPropertyChanged
     {
-        Entry _entry = null;
-        public Entry Entry
+        public EntryPage Page = null;
+
+        OTP.Entry _entry = null;
+        public OTP.Entry Entry
         {
             get { return _entry; }
 
@@ -176,11 +183,15 @@ namespace Author.UI.ViewModels
             }
         }
 
+        public Command DisappearingCommand { get; private set; }
+        public Command AcceptCommand { get; private set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public EntryPageViewModel()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            DisappearingCommand = new Command(new Action(OnDisappearing));
+            AcceptCommand = new Command(new Action(OnAcceptTapped));
         }
 
         public void Reset()
@@ -191,6 +202,68 @@ namespace Author.UI.ViewModels
             Secret = "";
             Length = 6;
             Period = 30;
+        }
+
+        void OnDisappearing()
+        {
+            Reset();
+        }
+
+        void OnAcceptTapped()
+        {
+            if (string.IsNullOrWhiteSpace(Name) ||
+                string.IsNullOrWhiteSpace(Secret))
+            {
+                Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Detected invalid properties for the entry")
+                    .SetDuration(TimeSpan.FromSeconds(3))
+                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+                return;
+            }
+
+            ObservableCollection<OTP.Entry> entriesList =
+                ViewModelLocator.MainPageVM.EntriesList;
+
+            if (Entry != null)
+            {
+                OTP.Entry entry = Entry;
+
+                entry.Type = Type;
+                entry.Name = Name;
+                entry.Digits = Length;
+                entry.Period = (byte)Period;
+                entry.SecretData = Secret;
+                entry.UpdateData();
+                entry.UpdateCode(Time.GetCurrent(), true);
+
+                Reset();
+
+                Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Saved edited entry")
+                    .SetDuration(TimeSpan.FromSeconds(3))
+                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+            }
+            else
+            {
+                entriesList.Add(new OTP.Entry(new Secret
+                {
+                    Type = Type,
+                    Name = Name,
+                    Data = Secret,
+                    Digits = Length,
+                    Period = (byte)Period
+                }));
+
+                Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Added new entry")
+                    .SetDuration(TimeSpan.FromSeconds(3))
+                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+            }
+
+            NavigationPage navPage = (NavigationPage)Page?.Parent;
+            navPage?.PopAsync();
+        }
+
+        void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -4,68 +4,86 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
   xmlns:vm="clr-namespace:Author.UI.ViewModels"
   xmlns:pages="clr-namespace:Author.UI.Pages"
+  xmlns:behaviors="clr-namespace:Behaviors;assembly=Behaviors"
+  x:Name="MainPage"
   x:Class="Author.UI.Pages.MainPage"
   BindingContext="{x:Static vm:ViewModelLocator.MainPageVM}"
   Icon="Icon.png"
   Title="Author">
+  <ContentPage.Behaviors>
+    <behaviors:EventHandlerBehavior EventName="Appearing">
+      <behaviors:InvokeCommandAction Command="{Binding AppearingCommand}" />
+    </behaviors:EventHandlerBehavior>
+    <behaviors:EventHandlerBehavior EventName="Disappearing">
+      <behaviors:InvokeCommandAction Command="{Binding DisappearingCommand}" />
+    </behaviors:EventHandlerBehavior>
+  </ContentPage.Behaviors>
   <ContentPage.ToolbarItems>
     <ToolbarItem
       Icon="Add.png"
       Text="Add OTP entry"
       Order="Primary"
-      Activated="OnAddTapped" />
+      Command="{Binding AddCommand}" />
     <ToolbarItem
       Icon="Settings.png"
       Text="Settings"
       Order="Secondary"
-      Activated="OnSettingsTapped" />
+      Command="{Binding SettingsCommand}" />
     <ToolbarItem
       Icon="About.png"
       Text="About"
       Order="Secondary"
-      Activated="OnAboutTapped" />
+      Command="{Binding AboutCommand}" />
   </ContentPage.ToolbarItems>
   <ListView
     HorizontalOptions="FillAndExpand"
     CachingStrategy="RecycleElement"
     ItemsSource="{Binding EntriesList}"
-    ItemSelected="OnItemSelected"
-    ItemAppearing="OnItemAppearing"
-    ItemDisappearing="OnItemDisappearing">
-  <ListView.ItemTemplate>
-    <DataTemplate>
-      <ViewCell>
-        <ViewCell.ContextActions>
-          <MenuItem
-            Clicked="OnItemEdit"
-            Text="Edit" />
-          <MenuItem
-            Clicked="OnItemDelete"
-            Text="Delete"
-            IsDestructive="True" />
-        </ViewCell.ContextActions>
-        <Grid Padding="5">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-          </Grid.RowDefinitions>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-          <Label
-            Grid.Row="0"
-            Grid.Column="0"
-            Text="{Binding Name}" />
-          <Label
-            Grid.Row="0"
-            Grid.Column="1"
-            Text="{Binding Code}" />
-          <ProgressBar
-            Grid.Row="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Progress="{Binding Progress}" />
+    SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+    <ListView.Behaviors>
+      <behaviors:EventHandlerBehavior EventName="ItemAppearing">
+        <behaviors:InvokeCommandAction Command="{Binding ItemAppearingCommand}" />
+      </behaviors:EventHandlerBehavior>
+      <behaviors:EventHandlerBehavior EventName="ItemDisappearing">
+        <behaviors:InvokeCommandAction Command="{Binding ItemDisappearingCommand}" />
+      </behaviors:EventHandlerBehavior>
+    </ListView.Behaviors>
+    <ListView.ItemTemplate>
+      <DataTemplate>
+        <ViewCell>
+          <ViewCell.ContextActions>
+            <MenuItem
+              Command="{Binding BindingContext.ItemEditCommand, Source={x:Reference Name=MainPage}}"
+              CommandParameter="{Binding}"
+              Text="Edit" />
+            <MenuItem
+              Command="{Binding BindingContext.ItemDeleteCommand, Source={x:Reference Name=MainPage}}"
+              CommandParameter="{Binding}"
+              Text="Delete"
+              IsDestructive="True" />
+          </ViewCell.ContextActions>
+          <Grid Padding="5">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label
+              Grid.Row="0"
+              Grid.Column="0"
+              Text="{Binding Name}" />
+            <Label
+              Grid.Row="0"
+              Grid.Column="1"
+              Text="{Binding Code}" />
+            <ProgressBar
+              Grid.Row="1"
+              Grid.Column="0"
+              Grid.ColumnSpan="2"
+              Progress="{Binding Progress}" />
           </Grid>
         </ViewCell>
       </DataTemplate>

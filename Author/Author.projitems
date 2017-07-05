@@ -39,6 +39,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\MainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\EntryPageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\ViewModelLocator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Base32.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Hexadecimal.cs" />
