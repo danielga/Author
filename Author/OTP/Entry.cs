@@ -180,7 +180,7 @@ namespace Author.OTP
 
         public void UpdateCode(long timestamp, bool force = false)
         {
-            int progress = (int)(timestamp % _period);
+            int progress = (int)(timestamp % _period + 1);
             Progress = progress / (double)_period;
 
             if (!force && timestamp < NextUpdate)

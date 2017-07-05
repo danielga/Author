@@ -83,7 +83,7 @@
               Grid.Row="1"
               Grid.Column="0"
               Grid.ColumnSpan="2"
-              Progress="{Binding Progress}" />
+              pages:AttachedProperties.AnimatedProgress="{Binding Progress}" />
           </Grid>
         </ViewCell>
       </DataTemplate>
