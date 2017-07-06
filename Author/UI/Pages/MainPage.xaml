@@ -7,9 +7,11 @@
   xmlns:behaviors="clr-namespace:Behaviors;assembly=Behaviors"
   x:Name="MainPage"
   x:Class="Author.UI.Pages.MainPage"
-  BindingContext="{x:Static vm:ViewModelLocator.MainPageVM}"
   Icon="Icon.png"
   Title="Author">
+  <ContentPage.BindingContext>
+    <vm:MainPageViewModel />
+  </ContentPage.BindingContext>
   <ContentPage.Behaviors>
     <behaviors:EventHandlerBehavior EventName="Appearing">
       <behaviors:InvokeCommandAction Command="{Binding AppearingCommand}" />
@@ -61,7 +63,7 @@
               CommandParameter="{Binding}"
               Text="Delete"
               IsDestructive="True" />
-          </ViewCell.ContextActions>
+        </ViewCell.ContextActions>
           <Grid Padding="5">
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />
@@ -83,7 +85,8 @@
               Grid.Row="1"
               Grid.Column="0"
               Grid.ColumnSpan="2"
-              pages:AttachedProperties.AnimatedProgress="{Binding Progress}" />
+              Progress="{Binding Progress, Mode=TwoWay}"
+              pages:AttachedProperties.AnimatedProgress="{Binding AnimatedProgress, Mode=TwoWay}" />
           </Grid>
         </ViewCell>
       </DataTemplate>

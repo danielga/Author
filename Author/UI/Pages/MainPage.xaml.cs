@@ -9,7 +9,8 @@ namespace Author.UI.Pages
         {
             InitializeComponent();
 
-            ViewModelLocator.MainPageVM.Page = this;
+            MainPageViewModel mainPageVM = (MainPageViewModel)BindingContext;
+            mainPageVM.Page = this;
         }
     }
 }

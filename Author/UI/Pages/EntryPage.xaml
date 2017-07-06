@@ -3,13 +3,17 @@
   xmlns="http://xamarin.com/schemas/2014/forms"
   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
   xmlns:vm="clr-namespace:Author.UI.ViewModels"
-  xmlns:pages="clr-namespace:Author.UI.Pages"
   xmlns:behaviors="clr-namespace:Behaviors;assembly=Behaviors"
   x:Class="Author.UI.Pages.EntryPage"
-  BindingContext="{x:Static vm:ViewModelLocator.EntryPageVM}"
   Icon="Icon.png"
   Title="{Binding Title}">
+  <ContentPage.BindingContext>
+    <vm:EntryPageViewModel />
+  </ContentPage.BindingContext>
   <ContentPage.Behaviors>
+    <behaviors:EventHandlerBehavior EventName="Appearing">
+      <behaviors:InvokeCommandAction Command="{Binding AppearingCommand}" />
+    </behaviors:EventHandlerBehavior>
     <behaviors:EventHandlerBehavior EventName="Disappearing">
       <behaviors:InvokeCommandAction Command="{Binding DisappearingCommand}" />
     </behaviors:EventHandlerBehavior>
@@ -77,7 +81,7 @@
         Text="{Binding Period, StringFormat='Timer period: {0} seconds'}"
         Margin="5"
         HorizontalOptions="Start" />
-      <pages:ExtendedSlider
+      <Slider
         IsEnabled="{Binding PeriodSliderEnabled}"
         Margin="5"
         Maximum="60"

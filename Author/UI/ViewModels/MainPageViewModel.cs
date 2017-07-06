@@ -1,4 +1,5 @@
 ﻿using Author.OTP;
+using Author.UI.Messages;
 using Author.UI.Pages;
 using Author.Utility;
 using System;
@@ -12,32 +13,16 @@ namespace Author.UI.ViewModels
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
-        readonly EntryManager _entryManager = new EntryManager();
+        static readonly EntryManager _entryManager = new EntryManager();
 
-        readonly EntryPage _entryPage = new EntryPage();
-        readonly SettingsPage _settingsPage = new SettingsPage();
-        readonly AboutPage _aboutPage = new AboutPage();
+        static readonly EntryPage _entryPage = new EntryPage();
+        static readonly EntryPageViewModel _entryPageVM = null;
+        static readonly SettingsPage _settingsPage = new SettingsPage();
+        static readonly AboutPage _aboutPage = new AboutPage();
 
         public MainPage Page = null;
 
-        ObservableCollection<OTP.Entry> _entriesList = new ObservableCollection<OTP.Entry>();
-        public ObservableCollection<OTP.Entry> EntriesList
-        {
-            get
-            {
-                return _entriesList;
-            }
-
-            set
-            {
-                bool changed = _entriesList != value;
-
-                _entriesList = value;
-
-                if (changed)
-                    OnPropertyChanged();
-            }
-        }
+        public ObservableCollection<OTP.Entry> EntriesList => _entryManager.Entries;
 
         public object SelectedItem
         {
@@ -64,19 +49,39 @@ namespace Author.UI.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        static MainPageViewModel()
+        {
+            _entryPageVM = (EntryPageViewModel)_entryPage.BindingContext;
+        }
+
         public MainPageViewModel()
         {
-            AppearingCommand = new Command(new Action(OnAppearing));
-            DisappearingCommand = new Command(new Action(OnDisappearing));
-            AddCommand = new Command(new Action(OnAddTapped));
-            SettingsCommand = new Command(new Action(OnSettingsTapped));
-            AboutCommand = new Command(new Action(OnAboutTapped));
-            ItemAppearingCommand = new Command(new Action<object>(OnItemAppearing));
-            ItemDisappearingCommand = new Command(new Action<object>(OnItemDisappearing));
-            ItemEditCommand = new Command(new Action<object>(OnItemEdit));
-            ItemDeleteCommand = new Command(new Action<object>(OnItemDelete));
+            MessagingCenter.Subscribe<AddEntry>(this, "AddEntry", (msg) =>
+            {
+                EntriesList.Add(msg.Entry);
+                GoToPreviousPage();
+            });
+
+            MessagingCenter.Subscribe<DeleteEntry>(this, "DeleteEntry", (msg) => OnItemDelete(msg.Entry));
+
+            MessagingCenter.Subscribe<EditEntry>(this, "EditEntry", (msg) => GoToPreviousPage());
+
+            MessagingCenter.Subscribe<RequestEditEntry>(this, "RequestEditEntry", (msg) => OnItemEdit(msg.Entry));
+
+            AppearingCommand = new Command(OnAppearing);
+            DisappearingCommand = new Command(OnDisappearing);
+            AddCommand = new Command(OnAddTapped);
+            SettingsCommand = new Command(OnSettingsTapped);
+            AboutCommand = new Command(OnAboutTapped);
+            ItemAppearingCommand = new Command(OnItemAppearing);
+            ItemDisappearingCommand = new Command(OnItemDisappearing);
+            ItemEditCommand = new Command(OnItemEdit);
+            ItemDeleteCommand = new Command(OnItemDelete);
 
             // Xamarin.Forms Previewer data
+            if (EntriesList.Count != 0)
+                return;
+
             const string Chars = Base32.ValidCharacters;
 
             Random random = new Random();
@@ -88,10 +93,10 @@ namespace Author.UI.ViewModels
                     Type = OTP.Type.Time,
                     Name = "Hello world " + i,
                     Digits = (byte)(4 + i),
-                    Period = (byte)(30 + (i - 2) * 5),
+                    Period = (byte)(2 + i),
                     Data = new string(Enumerable.Repeat(Chars, 32).Select(s => s[random.Next(s.Length)]).ToArray())
                 });
-                _entriesList.Add(entry);
+                EntriesList.Add(entry);
                 entry.UpdateCode(timestamp);
             }
         }
@@ -106,6 +111,12 @@ namespace Author.UI.ViewModels
             _entryManager.DisableUpdate();
         }
 
+        void GoToPreviousPage()
+        {
+            NavigationPage navPage = (NavigationPage)Page?.Parent;
+            navPage?.PopAsync();
+        }
+
         void SetPage(Page page)
         {
             NavigationPage navPage = (NavigationPage)Page?.Parent;
@@ -114,14 +125,13 @@ namespace Author.UI.ViewModels
 
         void OnAddTapped()
         {
-            ViewModelLocator.EntryPageVM.Title = "Add OTP entry";
-
             SetPage(_entryPage);
+
+            _entryPageVM.Entry = null;
         }
 
         void OnSettingsTapped()
         {
-            _settingsPage.BindingContext = ViewModelLocator.SettingsPageVM;
             SetPage(_settingsPage);
         }
 
@@ -148,23 +158,36 @@ namespace Author.UI.ViewModels
         {
             OTP.Entry entry = (OTP.Entry)context;
 
-            ViewModelLocator.EntryPageVM.Title = "Edit OTP entry";
-            ViewModelLocator.EntryPageVM.Entry = entry;
-
             SetPage(_entryPage);
+
+            _entryPageVM.Entry = entry;
         }
 
         void OnItemDelete(object context)
         {
             OTP.Entry entry = (OTP.Entry)context;
-            ObservableCollection<OTP.Entry> entriesList =
-                ViewModelLocator.MainPageVM.EntriesList;
 
-            entriesList.Remove(entry);
+            EntriesList.Remove(entry);
 
-            Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Deleted entry")
+            Acr.UserDialogs.UserDialogs.Instance.Toast(
+                new Acr.UserDialogs.ToastConfig("Deleted entry")
                 .SetDuration(TimeSpan.FromSeconds(3))
                 .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+
+            // This is required because the UWP platform on Windows seems to have a bug on ListView
+            // which causes deletion, addition and deletion of the previous addition to call
+            // context actions with the wrong binding context (or just wrong view cell)
+            if (Device.RuntimePlatform == Device.Windows)
+            {
+                MessagingCenter.Unsubscribe<AddEntry>(this, "AddEntry");
+                MessagingCenter.Unsubscribe<DeleteEntry>(this, "DeleteEntry");
+                MessagingCenter.Unsubscribe<EditEntry>(this, "EditEntry");
+                MessagingCenter.Unsubscribe<RequestEditEntry>(this, "RequestEditEntry");
+
+                Page.Content = null;
+                Page = new MainPage();
+                Application.Current.MainPage = new NavigationPage(Page);
+            }
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = null)

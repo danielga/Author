@@ -4,7 +4,6 @@ using Author.Utility;
 using Xamarin.Forms;
 using System.Threading.Tasks;
 using Author.Database;
-using Author.UI.ViewModels;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 
@@ -14,42 +13,39 @@ namespace Author.OTP
     {
         const string EntriesPath = "entries.txt";
 
-        public ObservableCollection<Entry> Entries
-        {
-            get
-            {
-                return _mainPageVM.EntriesList;
-            }
-
-            private set
-            {
-                _mainPageVM.EntriesList = value;
-            }
-        }
-
-        MainPageViewModel _mainPageVM = ViewModelLocator.MainPageVM;
+        readonly ObservableCollection<Entry> _entries = new ObservableCollection<Entry>();
+        public ObservableCollection<Entry> Entries => _entries;
 
         readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
 
-        readonly List<Entry> _visibleEntries = new List<Entry>();
+        readonly HashSet<Entry> _visibleEntries = new HashSet<Entry>();
         bool _shouldUpdate = false;
 
         public EntryManager()
         {
             Task.Run(async () =>
             {
+                Entry[] entries = null;
+
                 try
                 {
-                    ObservableCollection<Entry> entries =
-                        await Filesystem.LoadFromPath<ObservableCollection<Entry>>(EntriesPath);
-                    if (entries != null)
-                        Entries = entries;
+                    entries = await Filesystem.LoadFromPath<Entry[]>(EntriesPath);
                 }
                 catch (Exception)
                 { }
 
-                // TODO: Check if collection changes can happen before this is executed
-                Entries.CollectionChanged += OnEntriesChanged;
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (entries != null)
+                    {
+                        Entries.Clear();
+                        foreach (Entry entry in entries)
+                            Entries.Add(entry);
+                    }
+
+                    // TODO: Check if collection changes can happen before this is executed
+                    Entries.CollectionChanged += OnEntriesChanged;
+                });
             });
         }
 
@@ -67,28 +63,31 @@ namespace Author.OTP
             return _shouldUpdate;
         }
 
-        internal void EnableUpdate()
+        public void EnableUpdate()
         {
+            if (_shouldUpdate)
+                return;
+
             _shouldUpdate = true;
             UpdateEntries();
             Device.StartTimer(_updateInterval, UpdateEntries);
         }
 
-        internal void DisableUpdate()
+        public void DisableUpdate()
         {
             _shouldUpdate = false;
         }
 
-        internal void OnEntryAppearing(Entry entry)
+        public void OnEntryAppearing(Entry entry)
         {
             if (entry == null)
                 return;
 
-            entry.UpdateCode(Time.GetCurrent());
+            entry.UpdateCode(Time.GetCurrent(), true);
             _visibleEntries.Add(entry);
         }
 
-        internal void OnEntryDisappearing(Entry entry)
+        public void OnEntryDisappearing(Entry entry)
         {
             if (entry == null || (Device.RuntimePlatform == Device.Windows && !_shouldUpdate))
                 return;

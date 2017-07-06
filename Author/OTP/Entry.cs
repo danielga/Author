@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Author.UI.Messages;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using Xamarin.Forms;
 
 namespace Author.OTP
 {
@@ -10,29 +12,14 @@ namespace Author.OTP
     {
         IBaseGenerator _generator = null;
         bool _dirtySecret = false;
-
         long _nextUpdate = long.MinValue;
-        public long NextUpdate
-        {
-            get { return _nextUpdate; }
-
-            private set
-            {
-                bool changed = _nextUpdate != value;
-
-                _nextUpdate = value;
-
-                if (changed)
-                    OnPropertyChanged();
-            }
-        }
 
         string _code = null;
         public string Code
         {
             get { return _code; }
 
-            internal set
+            set
             {
                 bool changed = _code != value;
 
@@ -48,11 +35,27 @@ namespace Author.OTP
         {
             get { return _progress; }
 
-            private set
+            set
             {
                 bool changed = _progress != value;
 
                 _progress = value;
+
+                if (changed)
+                    OnPropertyChanged();
+            }
+        }
+
+        double _animatedProgress = 0.0;
+        public double AnimatedProgress
+        {
+            get { return _animatedProgress; }
+
+            set
+            {
+                bool changed = _animatedProgress != value;
+
+                _animatedProgress = value;
 
                 if (changed)
                     OnPropertyChanged();
@@ -145,10 +148,18 @@ namespace Author.OTP
             }
         }
 
+        public Command EditCommand { get; private set; }
+        public Command DeleteCommand { get; private set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Entry(Secret secret)
         {
+            EditCommand = new Command(() =>
+                MessagingCenter.Send(new RequestEditEntry { Entry = this }, "RequestEditEntry"));
+            DeleteCommand = new Command(() =>
+                MessagingCenter.Send(new DeleteEntry { Entry = this }, "DeleteEntry"));
+
             Type = secret.Type;
             Name = secret.Name;
             Digits = secret.Digits;
@@ -160,6 +171,11 @@ namespace Author.OTP
 
         public Entry(SerializationInfo info, StreamingContext context)
         {
+            EditCommand = new Command(() =>
+                MessagingCenter.Send(new RequestEditEntry { Entry = this }, "RequestEditEntry"));
+            DeleteCommand = new Command(() =>
+                MessagingCenter.Send(new DeleteEntry { Entry = this }, "DeleteEntry"));
+
             Type = (byte)info.GetValue("Type", typeof(byte));
             Name = (string)info.GetValue("Name", typeof(string));
             Digits = (byte)info.GetValue("Digits", typeof(byte));
@@ -180,14 +196,19 @@ namespace Author.OTP
 
         public void UpdateCode(long timestamp, bool force = false)
         {
-            int progress = (int)(timestamp % _period + 1);
-            Progress = progress / (double)_period;
+            int progress = (int)(timestamp % _period);
 
-            if (!force && timestamp < NextUpdate)
+            // We want the progress bar to change immediately
+            if (force)
+                Progress = progress / (double)_period;
+
+            AnimatedProgress = (progress + 1) / (double)_period;
+
+            if (!force && timestamp < _nextUpdate)
                 return;
 
             Code = _generator.GetCode(timestamp, _digits, _period);
-            NextUpdate = timestamp + _period - timestamp % _period;
+            _nextUpdate = timestamp + _period - timestamp % _period;
         }
 
         public void UpdateData()

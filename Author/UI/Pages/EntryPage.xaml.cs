@@ -1,7 +1,4 @@
-﻿using Acr.UserDialogs;
-using Author.OTP;
-using Author.UI.ViewModels;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace Author.UI.Pages
 {
@@ -10,8 +7,6 @@ namespace Author.UI.Pages
         public EntryPage()
         {
             InitializeComponent();
-
-            ViewModelLocator.EntryPageVM.Page = this;
         }
     }
 }

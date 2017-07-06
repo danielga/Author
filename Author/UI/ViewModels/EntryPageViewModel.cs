@@ -3,17 +3,14 @@ using System.Runtime.CompilerServices;
 using Author.OTP;
 using System.Diagnostics;
 using System;
-using System.Collections.ObjectModel;
 using Author.Utility;
 using Xamarin.Forms;
-using Author.UI.Pages;
+using Author.UI.Messages;
 
 namespace Author.UI.ViewModels
 {
     public class EntryPageViewModel : INotifyPropertyChanged
     {
-        public EntryPage Page = null;
-
         OTP.Entry _entry = null;
         public OTP.Entry Entry
         {
@@ -25,11 +22,21 @@ namespace Author.UI.ViewModels
 
                 if (value != null)
                 {
+                    Title = "Edit OTP entry";
                     Type = value.Type;
                     Name = value.Name;
                     Length = value.Digits;
                     Period = value.Period;
                     Secret = value.SecretData;
+                }
+                else
+                {
+                    Title = "Add OTP entry";
+                    Type = OTP.Type.Time;
+                    Name = "";
+                    Secret = "";
+                    Length = 6;
+                    Period = 30;
                 }
             }
         }
@@ -110,9 +117,11 @@ namespace Author.UI.ViewModels
 
             set
             {
-                bool changed = _period != value;
+                double newValue = Math.Round(value);
 
-                _period = value;
+                bool changed = _period != newValue;
+
+                _period = newValue;
 
                 if (changed)
                     OnPropertyChanged();
@@ -190,23 +199,13 @@ namespace Author.UI.ViewModels
 
         public EntryPageViewModel()
         {
-            DisappearingCommand = new Command(new Action(OnDisappearing));
-            AcceptCommand = new Command(new Action(OnAcceptTapped));
-        }
-
-        public void Reset()
-        {
-            Entry = null;
-            Type = OTP.Type.Time;
-            Name = "";
-            Secret = "";
-            Length = 6;
-            Period = 30;
+            DisappearingCommand = new Command(OnDisappearing);
+            AcceptCommand = new Command(OnAcceptTapped);
         }
 
         void OnDisappearing()
         {
-            Reset();
+            Entry = null;
         }
 
         void OnAcceptTapped()
@@ -214,14 +213,12 @@ namespace Author.UI.ViewModels
             if (string.IsNullOrWhiteSpace(Name) ||
                 string.IsNullOrWhiteSpace(Secret))
             {
-                Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Detected invalid properties for the entry")
+                Acr.UserDialogs.UserDialogs.Instance.Toast(
+                    new Acr.UserDialogs.ToastConfig("Detected invalid properties for the entry")
                     .SetDuration(TimeSpan.FromSeconds(3))
                     .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
                 return;
             }
-
-            ObservableCollection<OTP.Entry> entriesList =
-                ViewModelLocator.MainPageVM.EntriesList;
 
             if (Entry != null)
             {
@@ -235,30 +232,32 @@ namespace Author.UI.ViewModels
                 entry.UpdateData();
                 entry.UpdateCode(Time.GetCurrent(), true);
 
-                Reset();
+                MessagingCenter.Send(new EditEntry(), "EditEntry");
 
-                Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Saved edited entry")
+                Acr.UserDialogs.UserDialogs.Instance.Toast(
+                    new Acr.UserDialogs.ToastConfig("Saved edited entry")
                     .SetDuration(TimeSpan.FromSeconds(3))
                     .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
             }
             else
             {
-                entriesList.Add(new OTP.Entry(new Secret
+                MessagingCenter.Send(new AddEntry
                 {
-                    Type = Type,
-                    Name = Name,
-                    Data = Secret,
-                    Digits = Length,
-                    Period = (byte)Period
-                }));
+                    Entry = new OTP.Entry(new Secret
+                    {
+                        Type = Type,
+                        Name = Name,
+                        Data = Secret,
+                        Digits = Length,
+                        Period = (byte)Period
+                    })
+                }, "AddEntry");
 
-                Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Added new entry")
+                Acr.UserDialogs.UserDialogs.Instance.Toast(
+                    new Acr.UserDialogs.ToastConfig("Added new entry")
                     .SetDuration(TimeSpan.FromSeconds(3))
                     .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
             }
-
-            NavigationPage navPage = (NavigationPage)Page?.Parent;
-            navPage?.PopAsync();
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = null)

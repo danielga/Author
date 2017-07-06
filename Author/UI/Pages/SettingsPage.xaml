@@ -3,11 +3,12 @@
   xmlns="http://xamarin.com/schemas/2014/forms"
   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
   xmlns:vm="clr-namespace:Author.UI.ViewModels"
-  xmlns:behaviors="clr-namespace:Behaviors;assembly=Behaviors"
   x:Class="Author.UI.Pages.SettingsPage"
-  BindingContext="{x:Static vm:ViewModelLocator.SettingsPageVM}"
   Icon="Icon.png"
   Title="Settings">
+  <ContentPage.BindingContext>
+    <vm:SettingsPageViewModel />
+  </ContentPage.BindingContext>
   <ContentPage.ToolbarItems>
     <ToolbarItem
       Icon="Accept.png"

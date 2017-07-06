@@ -9,13 +9,14 @@ namespace Author.UI.ViewModels
 
         public SettingsPageViewModel()
         {
-            AcceptCommand = new Command(new Action(OnAcceptTapped));
+            AcceptCommand = new Command(OnAcceptTapped);
         }
 
         void OnAcceptTapped()
         {
             // Save settings
-            Acr.UserDialogs.UserDialogs.Instance.Toast(new Acr.UserDialogs.ToastConfig("Saved settings")
+            Acr.UserDialogs.UserDialogs.Instance.Toast(
+                new Acr.UserDialogs.ToastConfig("Saved settings")
                 .SetDuration(TimeSpan.FromSeconds(3))
                 .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
         }
