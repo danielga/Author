@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using Author.Utility;
 using Xamarin.Forms;
 using System.Threading.Tasks;
-using Author.Database;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 
@@ -11,8 +10,6 @@ namespace Author.OTP
 {
     public class EntryManager
     {
-        const string EntriesPath = "entries.txt";
-
         readonly ObservableCollection<Entry> _entries = new ObservableCollection<Entry>();
         public ObservableCollection<Entry> Entries => _entries;
 
@@ -25,18 +22,18 @@ namespace Author.OTP
         {
             Task.Run(async () =>
             {
-                Entry[] entries = null;
+                List<Entry> entries = null;
 
                 try
                 {
-                    entries = await Filesystem.LoadFromPath<Entry[]>(EntriesPath);
+                    entries = await Database.GetEntries();
                 }
                 catch (Exception)
                 { }
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    if (entries != null)
+                    if (entries != null && entries.Count != 0)
                     {
                         Entries.Clear();
                         foreach (Entry entry in entries)
@@ -51,7 +48,36 @@ namespace Author.OTP
 
         void OnEntriesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Task.Run(async () => await Filesystem.SaveToPath(EntriesPath, Entries));
+            Task.Run(async () =>
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (Entry entry in e.NewItems)
+                            await Database.AddEntry(entry);
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (Entry entry in e.OldItems)
+                            await Database.RemoveEntry(entry);
+
+                        foreach (Entry entry in e.NewItems)
+                            await Database.AddEntry(entry);
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Entry entry in e.OldItems)
+                            await Database.RemoveEntry(entry);
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        await Database.RemoveEntries();
+                        break;
+                }
+            });
         }
 
         bool UpdateEntries()

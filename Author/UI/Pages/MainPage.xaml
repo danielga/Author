@@ -63,7 +63,7 @@
               CommandParameter="{Binding}"
               Text="Delete"
               IsDestructive="True" />
-        </ViewCell.ContextActions>
+          </ViewCell.ContextActions>
           <Grid Padding="5">
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto" />

@@ -9,7 +9,6 @@
     <Import_RootNamespace>Author</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Database\Filesystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OTP\Authy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OTP\BlizzardApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OTP\Entry.cs" />
@@ -45,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\EntryPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Base32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Database.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Hexadecimal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Time.cs" />
   </ItemGroup>

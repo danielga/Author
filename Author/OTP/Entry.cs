@@ -1,18 +1,19 @@
 ﻿using Author.UI.Messages;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using Xamarin.Forms;
 
 namespace Author.OTP
 {
-    [Serializable]
-    public class Entry : INotifyPropertyChanged, ISerializable
+    public class Entry : INotifyPropertyChanged
     {
         IBaseGenerator _generator = null;
         bool _dirtySecret = false;
         long _nextUpdate = long.MinValue;
+
+        public Guid Identifier { get; }
 
         string _code = null;
         public string Code
@@ -155,11 +156,18 @@ namespace Author.OTP
 
         public Entry(Secret secret)
         {
+            Debug.Assert(secret.Type >= 0 && secret.Type <= OTP.Type.Maximum, "Invalid type");
+            Debug.Assert(!string.IsNullOrWhiteSpace(secret.Name), "Invalid name (null or only contains whitespace)");
+            Debug.Assert(secret.Digits >= 4 && secret.Digits <= 8, "Invalid OTP length (must be between 4 and 8)");
+            Debug.Assert(secret.Period >= 5 && secret.Period <= 60, "Invalid OTP period (must be between 5 and 60)");
+            Debug.Assert(!string.IsNullOrWhiteSpace(secret.Data), "Invalid secret (null or only contains whitespace)");
+
             EditCommand = new Command(() =>
                 MessagingCenter.Send(new RequestEditEntry { Entry = this }, "RequestEditEntry"));
             DeleteCommand = new Command(() =>
                 MessagingCenter.Send(new DeleteEntry { Entry = this }, "DeleteEntry"));
 
+            Identifier = secret.Identifier.Equals(Guid.Empty) ? Guid.NewGuid() : secret.Identifier;
             Type = secret.Type;
             Name = secret.Name;
             Digits = secret.Digits;
@@ -167,31 +175,6 @@ namespace Author.OTP
             SecretData = secret.Data;
 
             _generator = Factory.CreateGenerator(Type, SecretData);
-        }
-
-        public Entry(SerializationInfo info, StreamingContext context)
-        {
-            EditCommand = new Command(() =>
-                MessagingCenter.Send(new RequestEditEntry { Entry = this }, "RequestEditEntry"));
-            DeleteCommand = new Command(() =>
-                MessagingCenter.Send(new DeleteEntry { Entry = this }, "DeleteEntry"));
-
-            Type = (byte)info.GetValue("Type", typeof(byte));
-            Name = (string)info.GetValue("Name", typeof(string));
-            Digits = (byte)info.GetValue("Digits", typeof(byte));
-            Period = (byte)info.GetValue("Period", typeof(byte));
-            SecretData = (string)info.GetValue("SecretData", typeof(string));
-
-            _generator = Factory.CreateGenerator(Type, SecretData);
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("Type", _type, typeof(byte));
-            info.AddValue("Name", _name, typeof(string));
-            info.AddValue("Digits", _digits, typeof(byte));
-            info.AddValue("Period", _period, typeof(byte));
-            info.AddValue("SecretData", _secretData, typeof(string));
         }
 
         public void UpdateCode(long timestamp, bool force = false)

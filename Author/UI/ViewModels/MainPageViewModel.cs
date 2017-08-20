@@ -64,7 +64,25 @@ namespace Author.UI.ViewModels
 
             MessagingCenter.Subscribe<DeleteEntry>(this, "DeleteEntry", (msg) => OnItemDelete(msg.Entry));
 
-            MessagingCenter.Subscribe<EditEntry>(this, "EditEntry", (msg) => GoToPreviousPage());
+            MessagingCenter.Subscribe<EditEntry>(this, "EditEntry", (msg) =>
+            {
+                GoToPreviousPage();
+
+                if (Device.RuntimePlatform == Device.Windows)
+                {
+                    // TODO: This needs to be delayed enough for the entry to be updated on the main page
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        int index = EntriesList.IndexOf(msg.Entry);
+                        EntriesList[index] = msg.Entry;
+                    });
+                }
+                else
+                {
+                    int index = EntriesList.IndexOf(msg.Entry);
+                    EntriesList[index] = msg.Entry;
+                }
+            });
 
             MessagingCenter.Subscribe<RequestEditEntry>(this, "RequestEditEntry", (msg) => OnItemEdit(msg.Entry));
 
@@ -93,7 +111,7 @@ namespace Author.UI.ViewModels
                     Type = OTP.Type.Time,
                     Name = "Hello world " + i,
                     Digits = (byte)(4 + i),
-                    Period = (byte)(2 + i),
+                    Period = (byte)(5 + i),
                     Data = new string(Enumerable.Repeat(Chars, 32).Select(s => s[random.Next(s.Length)]).ToArray())
                 });
                 EntriesList.Add(entry);
@@ -174,20 +192,25 @@ namespace Author.UI.ViewModels
                 .SetDuration(TimeSpan.FromSeconds(3))
                 .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
 
-            // This is required because the UWP platform on Windows seems to have a bug on ListView
-            // which causes deletion, addition and deletion of the previous addition to call
-            // context actions with the wrong binding context (or just wrong view cell)
-            if (Device.RuntimePlatform == Device.Windows)
-            {
-                MessagingCenter.Unsubscribe<AddEntry>(this, "AddEntry");
-                MessagingCenter.Unsubscribe<DeleteEntry>(this, "DeleteEntry");
-                MessagingCenter.Unsubscribe<EditEntry>(this, "EditEntry");
-                MessagingCenter.Unsubscribe<RequestEditEntry>(this, "RequestEditEntry");
+            UWPFix();
+        }
 
-                Page.Content = null;
-                Page = new MainPage();
-                Application.Current.MainPage = new NavigationPage(Page);
-            }
+        // This is required because the UWP platform on Windows seems to have a bug on ListView
+        // which causes deletion, addition and deletion of the previous addition to call
+        // context actions with the wrong binding context (or just wrong view cell)
+        void UWPFix()
+        {
+            if (Device.RuntimePlatform != Device.Windows)
+                return;
+
+            MessagingCenter.Unsubscribe<AddEntry>(this, "AddEntry");
+            MessagingCenter.Unsubscribe<DeleteEntry>(this, "DeleteEntry");
+            MessagingCenter.Unsubscribe<EditEntry>(this, "EditEntry");
+            MessagingCenter.Unsubscribe<RequestEditEntry>(this, "RequestEditEntry");
+
+            Page.Content = null;
+            Page = new MainPage();
+            Application.Current.MainPage = new NavigationPage(Page);
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = null)

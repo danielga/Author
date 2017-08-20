@@ -1,5 +1,4 @@
 ﻿using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace Author.UI.Pages
 {
@@ -8,6 +7,21 @@ namespace Author.UI.Pages
         public App()
         {
             InitializeComponent();
+        }
+
+        protected override void OnStart()
+        {
+            
+        }
+
+        protected override void OnResume()
+        {
+
+        }
+
+        protected override void OnSleep()
+        {
+
         }
     }
 }

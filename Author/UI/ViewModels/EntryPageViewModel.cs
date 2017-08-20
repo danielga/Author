@@ -232,7 +232,7 @@ namespace Author.UI.ViewModels
                 entry.UpdateData();
                 entry.UpdateCode(Time.GetCurrent(), true);
 
-                MessagingCenter.Send(new EditEntry(), "EditEntry");
+                MessagingCenter.Send(new EditEntry { Entry = entry }, "EditEntry");
 
                 Acr.UserDialogs.UserDialogs.Instance.Toast(
                     new Acr.UserDialogs.ToastConfig("Saved edited entry")

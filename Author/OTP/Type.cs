@@ -9,6 +9,7 @@ namespace Author.OTP
         public const byte Steam = 2;
         public const byte Blizzard = 3;
         public const byte Authy = 4;
+        public const byte Maximum = Authy;
 
         public static readonly Dictionary<string, byte> FromName = new Dictionary<string, byte>
         {

@@ -85,7 +85,7 @@
         IsEnabled="{Binding PeriodSliderEnabled}"
         Margin="5"
         Maximum="60"
-        Minimum="1"
+        Minimum="5"
         HorizontalOptions="FillAndExpand"
         Value="{Binding Period, Mode=TwoWay}" />
     </StackLayout>
