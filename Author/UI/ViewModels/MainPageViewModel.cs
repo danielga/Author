@@ -70,7 +70,9 @@ namespace Author.UI.ViewModels
 
                 if (Device.RuntimePlatform == Device.Windows)
                 {
-                    // TODO: This needs to be delayed enough for the entry to be updated on the main page
+                    // Possible race condition on Xamarin.Forms?
+                    // Bug 58028 - ListView cell replacement when unfocused results in a blank space
+                    // https://bugzilla.xamarin.com/show_bug.cgi?id=58028
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         int index = EntriesList.IndexOf(msg.Entry);
@@ -198,6 +200,8 @@ namespace Author.UI.ViewModels
         // This is required because the UWP platform on Windows seems to have a bug on ListView
         // which causes deletion, addition and deletion of the previous addition to call
         // context actions with the wrong binding context (or just wrong view cell)
+        // Bug 57982 - ListView context actions called with the wrong binding context
+        // https://bugzilla.xamarin.com/show_bug.cgi?id=57982
         void UWPFix()
         {
             if (Device.RuntimePlatform != Device.Windows)
