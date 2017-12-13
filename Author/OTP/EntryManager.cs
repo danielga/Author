@@ -115,7 +115,7 @@ namespace Author.OTP
 
         public void OnEntryDisappearing(Entry entry)
         {
-            if (entry == null || (Device.RuntimePlatform == Device.Windows && !_shouldUpdate))
+            if (entry == null || (Device.RuntimePlatform == Device.UWP && !_shouldUpdate))
                 return;
 
             _visibleEntries.Remove(entry);

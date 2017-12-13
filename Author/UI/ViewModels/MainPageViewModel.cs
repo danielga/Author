@@ -68,7 +68,7 @@ namespace Author.UI.ViewModels
             {
                 GoToPreviousPage();
 
-                if (Device.RuntimePlatform == Device.Windows)
+                if (Device.RuntimePlatform == Device.UWP)
                 {
                     // Possible race condition on Xamarin.Forms?
                     // Bug 58028 - ListView cell replacement when unfocused results in a blank space
@@ -204,7 +204,7 @@ namespace Author.UI.ViewModels
         // https://bugzilla.xamarin.com/show_bug.cgi?id=57982
         void UWPFix()
         {
-            if (Device.RuntimePlatform != Device.Windows)
+            if (Device.RuntimePlatform != Device.UWP)
                 return;
 
             MessagingCenter.Unsubscribe<AddEntry>(this, "AddEntry");
