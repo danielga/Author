@@ -46,6 +46,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Base32.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Database.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Hexadecimal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\OTPAuth.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Time.cs" />
   </ItemGroup>
   <ItemGroup>
