@@ -5,7 +5,7 @@
   xmlns:vm="clr-namespace:Author.UI.ViewModels"
   xmlns:pages="clr-namespace:Author.UI.Pages"
   xmlns:behaviors="clr-namespace:Behaviors;assembly=Behaviors"
-  x:Name="MainPage"
+  x:Name="PageMain"
   x:Class="Author.UI.Pages.MainPage"
   Icon="Icon.png"
   Title="Author">
@@ -55,11 +55,11 @@
         <ViewCell>
           <ViewCell.ContextActions>
             <MenuItem
-              Command="{Binding BindingContext.ItemEditCommand, Source={x:Reference Name=MainPage}}"
+              Command="{Binding BindingContext.ItemEditCommand, Source={x:Reference Name=PageMain}}"
               CommandParameter="{Binding}"
               Text="Edit" />
             <MenuItem
-              Command="{Binding BindingContext.ItemDeleteCommand, Source={x:Reference Name=MainPage}}"
+              Command="{Binding BindingContext.ItemDeleteCommand, Source={x:Reference Name=PageMain}}"
               CommandParameter="{Binding}"
               Text="Delete"
               IsDestructive="True" />

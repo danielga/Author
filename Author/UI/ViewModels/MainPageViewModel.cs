@@ -68,22 +68,8 @@ namespace Author.UI.ViewModels
             {
                 GoToPreviousPage();
 
-                if (Device.RuntimePlatform == Device.UWP)
-                {
-                    // Possible race condition on Xamarin.Forms?
-                    // Bug 58028 - ListView cell replacement when unfocused results in a blank space
-                    // https://bugzilla.xamarin.com/show_bug.cgi?id=58028
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        int index = EntriesList.IndexOf(msg.Entry);
-                        EntriesList[index] = msg.Entry;
-                    });
-                }
-                else
-                {
-                    int index = EntriesList.IndexOf(msg.Entry);
-                    EntriesList[index] = msg.Entry;
-                }
+                int index = EntriesList.IndexOf(msg.Entry);
+                EntriesList[index] = msg.Entry;
             });
 
             MessagingCenter.Subscribe<RequestEditEntry>(this, "RequestEditEntry", (msg) => OnItemEdit(msg.Entry));
@@ -193,28 +179,6 @@ namespace Author.UI.ViewModels
                 new Acr.UserDialogs.ToastConfig("Deleted entry")
                 .SetDuration(TimeSpan.FromSeconds(3))
                 .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
-
-            UWPFix();
-        }
-
-        // This is required because the UWP platform on Windows seems to have a bug on ListView
-        // which causes deletion, addition and deletion of the previous addition to call
-        // context actions with the wrong binding context (or just wrong view cell)
-        // Bug 57982 - ListView context actions called with the wrong binding context
-        // https://bugzilla.xamarin.com/show_bug.cgi?id=57982
-        void UWPFix()
-        {
-            if (Device.RuntimePlatform != Device.UWP)
-                return;
-
-            MessagingCenter.Unsubscribe<AddEntry>(this, "AddEntry");
-            MessagingCenter.Unsubscribe<DeleteEntry>(this, "DeleteEntry");
-            MessagingCenter.Unsubscribe<EditEntry>(this, "EditEntry");
-            MessagingCenter.Unsubscribe<RequestEditEntry>(this, "RequestEditEntry");
-
-            Page.Content = null;
-            Page = new MainPage();
-            Application.Current.MainPage = new NavigationPage(Page);
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = null)
