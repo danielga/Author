@@ -1,9 +1,7 @@
-﻿using Author.UI.Messages;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Xamarin.Forms;
 
 namespace Author.OTP
 {
@@ -130,16 +128,16 @@ namespace Author.OTP
             }
         }
 
-        string _secretData = null;
-        public string SecretData
+        string _secret = null;
+        public string Secret
         {
-            get { return _secretData; }
+            get { return _secret; }
 
             internal set
             {
-                bool changed = _secretData != value;
+                bool changed = _secret != value;
 
-                _secretData = value;
+                _secret = value;
 
                 if (changed)
                 {
@@ -148,9 +146,6 @@ namespace Author.OTP
                 }
             }
         }
-
-        public Command EditCommand { get; private set; }
-        public Command DeleteCommand { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -162,19 +157,14 @@ namespace Author.OTP
             Debug.Assert(secret.Period >= 5 && secret.Period <= 60, "Invalid OTP period (must be between 5 and 60)");
             Debug.Assert(!string.IsNullOrWhiteSpace(secret.Data), "Invalid secret (null or only contains whitespace)");
 
-            EditCommand = new Command(() =>
-                MessagingCenter.Send(new RequestEditEntry { Entry = this }, "RequestEditEntry"));
-            DeleteCommand = new Command(() =>
-                MessagingCenter.Send(new DeleteEntry { Entry = this }, "DeleteEntry"));
-
             Identifier = secret.Identifier.Equals(Guid.Empty) ? Guid.NewGuid() : secret.Identifier;
             Type = secret.Type;
             Name = secret.Name;
             Digits = secret.Digits;
             Period = secret.Period;
-            SecretData = secret.Data;
+            Secret = secret.Data;
 
-            _generator = Factory.CreateGenerator(Type, SecretData);
+            _generator = Factory.CreateGenerator(Type, Secret);
         }
 
         public void UpdateCode(long timestamp, bool force = false)
@@ -199,13 +189,26 @@ namespace Author.OTP
             if (_dirtySecret)
             {
                 _dirtySecret = false;
-                _generator = Factory.CreateGenerator(Type, SecretData);
+                _generator = Factory.CreateGenerator(Type, Secret);
             }
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public Secret GetSecret()
+        {
+            return new Secret
+            {
+                Identifier = Identifier,
+                Type = Type,
+                Name = Name,
+                Digits = Digits,
+                Period = Period,
+                Data = Secret
+            };
         }
     }
 }

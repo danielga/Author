@@ -22,7 +22,7 @@ namespace Author.UI.ViewModels
 
         public MainPage Page = null;
 
-        public ObservableCollection<OTP.Entry> EntriesList => _entryManager.Entries;
+        public ObservableCollection<Entry> EntriesList => _entryManager.Entries;
 
         public object SelectedItem
         {
@@ -94,7 +94,7 @@ namespace Author.UI.ViewModels
             long timestamp = Time.GetCurrent();
             for (int i = 0; i < 5; ++i)
             {
-                OTP.Entry entry = new OTP.Entry(new Secret
+                Entry entry = new Entry(new Secret
                 {
                     Type = OTP.Type.Time,
                     Name = "Hello world " + i,
@@ -150,19 +150,19 @@ namespace Author.UI.ViewModels
         void OnItemAppearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            _entryManager.OnEntryAppearing((OTP.Entry)e.Item);
+            _entryManager.OnEntryAppearing((Entry)e.Item);
         }
 
         // This event is triggered when we navigate to another page
         void OnItemDisappearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            _entryManager.OnEntryDisappearing((OTP.Entry)e.Item);
+            _entryManager.OnEntryDisappearing((Entry)e.Item);
         }
 
         void OnItemEdit(object context)
         {
-            OTP.Entry entry = (OTP.Entry)context;
+            Entry entry = (Entry)context;
 
             SetPage(_entryPage);
 
@@ -171,7 +171,7 @@ namespace Author.UI.ViewModels
 
         void OnItemDelete(object context)
         {
-            OTP.Entry entry = (OTP.Entry)context;
+            Entry entry = (Entry)context;
 
             EntriesList.Remove(entry);
 

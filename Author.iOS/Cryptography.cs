@@ -1,15 +1,17 @@
-﻿namespace Author.Utility
+﻿using Xamarin.Auth;
+
+namespace Author.Utility
 {
     public static class Cryptography
     {
-        public static Xamarin.Auth.AccountStore CreateAccountStore(string password)
+        public static AccountStore CreateAccountStore(string password)
         {
             return CreateAccountStore();
         }
 
-        public static Xamarin.Auth.AccountStore CreateAccountStore()
+        public static AccountStore CreateAccountStore()
         {
-            return Xamarin.Auth.AccountStore.Create();
+            return AccountStore.Create();
         }
     }
 }

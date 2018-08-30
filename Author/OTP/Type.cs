@@ -13,8 +13,8 @@ namespace Author.OTP
 
         public static readonly Dictionary<string, byte> FromName = new Dictionary<string, byte>
         {
-            { "hash", Hash },
-            { "time", Time },
+            { "hotp", Hash },
+            { "totp", Time },
             { "steam", Steam },
             { "blizzard", Blizzard },
             { "authy", Authy }
@@ -22,8 +22,8 @@ namespace Author.OTP
 
         public static readonly Dictionary<byte, string> Name = new Dictionary<byte, string>
         {
-            { Hash, "hash" },
-            { Time, "time" },
+            { Hash, "hotp" },
+            { Time, "totp" },
             { Steam, "steam" },
             { Blizzard, "blizzard" },
             { Authy, "authy" }

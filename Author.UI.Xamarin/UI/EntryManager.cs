@@ -5,13 +5,13 @@ using Xamarin.Forms;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
 using System.Collections.Generic;
+using Author.OTP;
 
-namespace Author.OTP
+namespace Author.UI
 {
     public class EntryManager
     {
-        readonly ObservableCollection<Entry> _entries = new ObservableCollection<Entry>();
-        public ObservableCollection<Entry> Entries => _entries;
+        public ObservableCollection<Entry> Entries { get; } = new ObservableCollection<Entry>();
 
         readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
 
@@ -26,7 +26,9 @@ namespace Author.OTP
 
                 try
                 {
-                    entries = await Database.GetEntries();
+                    entries = new List<Entry>();
+                    foreach (Secret secret in await Database.GetEntries())
+                        entries.Add(new Entry(secret));
                 }
                 catch (Exception)
                 { }
@@ -54,22 +56,22 @@ namespace Author.OTP
                 {
                     case NotifyCollectionChangedAction.Add:
                         foreach (Entry entry in e.NewItems)
-                            await Database.AddEntry(entry);
+                            await Database.AddEntry(entry.GetSecret());
 
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
                         foreach (Entry entry in e.OldItems)
-                            await Database.RemoveEntry(entry);
+                            await Database.RemoveEntry(entry.GetSecret());
 
                         foreach (Entry entry in e.NewItems)
-                            await Database.AddEntry(entry);
+                            await Database.AddEntry(entry.GetSecret());
 
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Entry entry in e.OldItems)
-                            await Database.RemoveEntry(entry);
+                            await Database.RemoveEntry(entry.GetSecret());
 
                         break;
 

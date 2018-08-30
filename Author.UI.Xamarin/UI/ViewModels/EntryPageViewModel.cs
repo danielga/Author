@@ -11,8 +11,8 @@ namespace Author.UI.ViewModels
 {
     public class EntryPageViewModel : INotifyPropertyChanged
     {
-        OTP.Entry _entry = null;
-        public OTP.Entry Entry
+        Entry _entry = null;
+        public Entry Entry
         {
             get { return _entry; }
 
@@ -27,7 +27,7 @@ namespace Author.UI.ViewModels
                     Name = value.Name;
                     Length = value.Digits;
                     Period = value.Period;
-                    Secret = value.SecretData;
+                    Secret = value.Secret;
                 }
                 else
                 {
@@ -222,13 +222,13 @@ namespace Author.UI.ViewModels
 
             if (Entry != null)
             {
-                OTP.Entry entry = Entry;
+                Entry entry = Entry;
 
                 entry.Type = Type;
                 entry.Name = Name;
                 entry.Digits = Length;
                 entry.Period = (byte)Period;
-                entry.SecretData = Secret;
+                entry.Secret = Secret;
                 entry.UpdateData();
                 entry.UpdateCode(Time.GetCurrent(), true);
 
@@ -243,7 +243,7 @@ namespace Author.UI.ViewModels
             {
                 MessagingCenter.Send(new AddEntry
                 {
-                    Entry = new OTP.Entry(new Secret
+                    Entry = new Entry(new Secret
                     {
                         Type = Type,
                         Name = Name,

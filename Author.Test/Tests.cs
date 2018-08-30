@@ -1,30 +1,28 @@
-﻿using NUnit.Framework;
-using Xamarin.UITest;
+using System;
+using Xunit;
+using Author.Utility;
 
 namespace Author.Test
 {
-    [TestFixture(Platform.Android)]
-    [TestFixture(Platform.iOS)]
     public class Tests
     {
-        IApp app;
-        Platform platform;
-
-        public Tests(Platform platform)
+        [Fact]
+        public void OtpAuthTest()
         {
-            this.platform = platform;
-        }
-
-        [SetUp]
-        public void BeforeEachTest()
-        {
-            app = AppInitializer.StartApp(platform);
-        }
-
-        [Test]
-        public void OTPAuthTest()
-        {
-            Utility.OTPAuth.ParseString("otpauth://totp/ACME%20Co:john.doe@email.com?secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30");
+            var uri = new Uri("otpauth://totp/ACME%20Co:john.doe@email.com?" +
+                              "secret=HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ&" +
+                              "issuer=ACME%20Co&algorithm=SHA1&digits=6&period=30");
+            Assert.Equal(OtpAuth.ParseString(uri), new OtpAuth
+            {
+                Type = OTP.Type.Time,
+                Name = "john.doe@email.com",
+                Secret = "HXDMVJECJJWSRB3HWIZR4IFUGFTMXBOZ",
+                Issuer = "ACME Co",
+                Algorithm = "SHA1",
+                Digits = 6,
+                Counter = 0,
+                Period = 30
+            });
         }
     }
 }
