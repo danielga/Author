@@ -86,6 +86,7 @@ namespace Author.UI.ViewModels
             ItemDeleteCommand = new Command(OnItemDelete);
             ItemTappedCommand = new Command(OnItemTapped);
 
+#if DEBUG
             // Xamarin.Forms Previewer data
             if (EntriesList.Count != 0)
                 return;
@@ -107,6 +108,7 @@ namespace Author.UI.ViewModels
                 EntriesList.Add(entry);
                 entry.UpdateCode(timestamp);
             }
+#endif
         }
 
         void OnAppearing()
