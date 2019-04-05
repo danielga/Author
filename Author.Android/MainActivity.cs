@@ -1,8 +1,6 @@
-﻿using Acr.UserDialogs;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using Xamarin.Forms;
 
 namespace Author.Droid
 {
@@ -19,8 +17,9 @@ namespace Author.Droid
 
             base.OnCreate(bundle);
 
-            Forms.Init(this, bundle);
-            UserDialogs.Init(this);
+            Xamarin.Forms.Forms.Init(this, bundle);
+            Acr.UserDialogs.UserDialogs.Init(this);
+            Xamarin.Essentials.Platform.Init(this, bundle);
 
             LoadApplication(new UI.Pages.App());
         }

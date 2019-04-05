@@ -49,6 +49,9 @@
       <behaviors:EventHandlerBehavior EventName="ItemDisappearing">
         <behaviors:InvokeCommandAction Command="{Binding ItemDisappearingCommand}" />
       </behaviors:EventHandlerBehavior>
+      <behaviors:EventHandlerBehavior EventName="ItemTapped">
+        <behaviors:InvokeCommandAction Command="{Binding ItemTappedCommand}" />
+      </behaviors:EventHandlerBehavior>
     </ListView.Behaviors>
     <ListView.ItemTemplate>
       <DataTemplate>
