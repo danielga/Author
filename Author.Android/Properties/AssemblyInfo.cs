@@ -17,7 +17,7 @@ using Xamarin.Forms.Xaml;
 #endif
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Author")]
-[assembly: AssemblyCopyright("Copyright © 2016 Daniel")]
+[assembly: AssemblyCopyright("Copyright © 2016-2019 Daniel")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
