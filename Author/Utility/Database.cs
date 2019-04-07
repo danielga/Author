@@ -2,15 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xamarin.Auth;
+using static Author.Utility.Cryptography;
 
 namespace Author.Utility
 {
     public static class Database
     {
-        const string ServiceName = "Author";
+        private const string ServiceName = "Author";
 
-        static AccountStore _accountStore = Cryptography.CreateAccountStore();
+        private static AccountStore _accountStore = CreateAccountStore();
 
         public static async Task AddEntry(Secret entry)
         {
