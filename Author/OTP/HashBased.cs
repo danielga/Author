@@ -1,24 +1,22 @@
 ﻿using System;
 using Author.Utility;
-using PCLCrypto;
+using System.Security.Cryptography;
 
 namespace Author.OTP
 {
     public class HashBased : IBaseGenerator
     {
-        public const MacAlgorithm DefaultAlgorithm = MacAlgorithm.HmacSha1;
+        public static readonly HashAlgorithmName DefaultAlgorithm = HashAlgorithmName.SHA1;
 
-        protected CryptographicHash Hash = null;
+        protected HMAC Hash = null;
         protected byte[] SecretBytes = null;
         protected string SecretData = null;
 
-        public HashBased(string secret, MacAlgorithm algorithm = DefaultAlgorithm)
+        public HashBased(string secret, HashAlgorithmName algorithm)
         {
             SecretData = secret;
             SecretBytes = Base32.Decode(secret);
-            IMacAlgorithmProvider provider =
-                WinRTCrypto.MacAlgorithmProvider.OpenAlgorithm(algorithm);
-            Hash = provider.CreateHash(SecretBytes);
+            Hash = HMAC.Create(algorithm.Name);
         }
 
         public virtual string GetCode(long counter, byte digits, byte period)
@@ -33,8 +31,7 @@ namespace Author.OTP
             ts[2] = 0;
             ts[3] = 0;
 
-            Hash.Append(ts);
-            byte[] hash = Hash.GetValueAndReset();
+            byte[] hash = Hash.ComputeHash(ts);
 
             int offset = hash[hash.Length - 1] & 0x0F;
             int binary = hash[offset + 0] << 24 |

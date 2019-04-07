@@ -6,7 +6,7 @@
         public const byte DefaultPeriod = 10;
 
         public Authy(string secret)
-            : base(secret)
+            : base(secret, DefaultAlgorithm)
         { }
 
         public override string GetCode(long timestamp, byte digits, byte period)
