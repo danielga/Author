@@ -46,6 +46,7 @@ namespace Author.UI.ViewModels
         public Command ItemDisappearingCommand { get; private set; }
         public Command ItemEditCommand { get; private set; }
         public Command ItemDeleteCommand { get; private set; }
+        public Command ItemTappedCommand { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -83,7 +84,9 @@ namespace Author.UI.ViewModels
             ItemDisappearingCommand = new Command(OnItemDisappearing);
             ItemEditCommand = new Command(OnItemEdit);
             ItemDeleteCommand = new Command(OnItemDelete);
+            ItemTappedCommand = new Command(OnItemTapped);
 
+#if DEBUG
             // Xamarin.Forms Previewer data
             if (EntriesList.Count != 0)
                 return;
@@ -105,6 +108,7 @@ namespace Author.UI.ViewModels
                 EntriesList.Add(entry);
                 entry.UpdateCode(timestamp);
             }
+#endif
         }
 
         void OnAppearing()
@@ -179,6 +183,18 @@ namespace Author.UI.ViewModels
                 new Acr.UserDialogs.ToastConfig("Deleted entry")
                 .SetDuration(TimeSpan.FromSeconds(3))
                 .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+        }
+
+        async void OnItemTapped(object context)
+        {
+            ItemTappedEventArgs args = (ItemTappedEventArgs)context;
+            Entry entry = (Entry)args.Item;
+            await Xamarin.Essentials.Clipboard.SetTextAsync(entry.Code);
+            Acr.UserDialogs.UserDialogs.Instance.Toast(
+                new Acr.UserDialogs.ToastConfig("Copied OTP")
+                .SetDuration(TimeSpan.FromSeconds(3))
+                .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = null)
