@@ -16,7 +16,7 @@ namespace Author.OTP
         };
 
         public Steam(string secret)
-            : base(secret)
+            : base(secret, DefaultAlgorithm)
         { }
 
         public override string GetCode(long timestamp, byte digits, byte period)
@@ -25,8 +25,7 @@ namespace Author.OTP
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(ts);
 
-            Hash.Append(ts);
-            byte[] mac = Hash.GetValueAndReset();
+            byte[] mac = Hash.ComputeHash(ts);
 
             int start = mac[19] & 0x0f;
             byte[] bytes = new byte[4];
