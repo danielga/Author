@@ -25,7 +25,8 @@ namespace Author.OTP
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(ts);
 
-            byte[] mac = Hash.ComputeHash(ts);
+            Hash.AppendData(ts);
+            byte[] mac = Hash.GetHashAndReset();
 
             int start = mac[19] & 0x0f;
             byte[] bytes = new byte[4];
