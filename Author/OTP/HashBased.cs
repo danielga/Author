@@ -8,7 +8,7 @@ namespace Author.OTP
     {
         public static readonly HashAlgorithmName DefaultAlgorithm = HashAlgorithmName.SHA1;
 
-        protected HMAC Hash = null;
+        protected IncrementalHash Hash = null;
         protected byte[] SecretBytes = null;
         protected string SecretData = null;
 
@@ -16,7 +16,7 @@ namespace Author.OTP
         {
             SecretData = secret;
             SecretBytes = Base32.Decode(secret);
-            Hash = HMAC.Create(algorithm.Name);
+            Hash = IncrementalHash.CreateHMAC(algorithm, SecretBytes);
         }
 
         public virtual string GetCode(long counter, byte digits, byte period)
@@ -31,7 +31,8 @@ namespace Author.OTP
             ts[2] = 0;
             ts[3] = 0;
 
-            byte[] hash = Hash.ComputeHash(ts);
+            Hash.AppendData(ts);
+            byte[] hash = Hash.GetHashAndReset();
 
             int offset = hash[hash.Length - 1] & 0x0F;
             int binary = hash[offset + 0] << 24 |
