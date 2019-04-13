@@ -198,12 +198,32 @@
     <BundleResource Include="Resources\Accept.png" />
   </ItemGroup>
   <ItemGroup>
-    <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\Contents.json">
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-60%402x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-60%403x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-76.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-76%402x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small%402x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small%402x-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small%403x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small-40.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small-40%402x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small-40%402x-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\Icon-Small-40%403x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\AppIcon.appiconset\iTunesArtwork%402x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Default.png" />
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Default%402x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Default%402x-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Default-568h%402x.png" />
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Default-568h%402x-1.png" />
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Default-Portrait.png" />
+    <ImageAsset Include="Resources\Media.xcassets\LaunchImage.launchimage\Default-Portrait%402x.png" />
   </ItemGroup>
   <Import Project="..\Author\Author.projitems" Label="Shared" Condition="Exists('..\Author\Author.projitems')" />
   <Import Project="..\Author.UI.Xamarin\Author.UI.Xamarin.projitems" Label="Shared" />
