@@ -29,6 +29,13 @@ namespace Author.macOS
             Xamarin.Forms.Forms.Init();
             LoadApplication(new UI.Pages.App());
             base.DidFinishLaunching(notification);
+
+            NSAppleEventManager appleEventManager = NSAppleEventManager.SharedAppleEventManager;
+            appleEventManager.SetEventHandler(this, new ObjCRuntime.Selector("handleGetURLEvent:withReplyEvent:"), AEEventClass.Internet, AEEventID.GetUrl);
         }
+
+        [Export("handleGetURLEvent:withReplyEvent:")]
+        private void HandleGetURLEvent(NSAppleEventDescriptor descriptor, NSAppleEventDescriptor replyEvent)
+        {}
     }
 }
