@@ -2,7 +2,7 @@
 using Android.Content.PM;
 using Android.OS;
 
-namespace Author.Droid
+namespace Author.Android
 {
     [Activity(Label = "Author",
         Icon = "@drawable/icon",
