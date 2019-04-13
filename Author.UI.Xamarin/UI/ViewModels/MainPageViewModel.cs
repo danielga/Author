@@ -189,11 +189,16 @@ namespace Author.UI.ViewModels
         {
             ItemTappedEventArgs args = (ItemTappedEventArgs)context;
             Entry entry = (Entry)args.Item;
-            await Xamarin.Essentials.Clipboard.SetTextAsync(entry.Code);
-            Acr.UserDialogs.UserDialogs.Instance.Toast(
-                new Acr.UserDialogs.ToastConfig("Copied OTP")
-                .SetDuration(TimeSpan.FromSeconds(3))
-                .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+            try
+            {
+                await Xamarin.Essentials.Clipboard.SetTextAsync(entry.Code);
+                Acr.UserDialogs.UserDialogs.Instance.Toast(
+                    new Acr.UserDialogs.ToastConfig("Copied OTP")
+                    .SetDuration(TimeSpan.FromSeconds(3))
+                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+            }
+            catch (NotImplementedException)
+            {}
 
         }
 
