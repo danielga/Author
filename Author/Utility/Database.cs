@@ -18,7 +18,7 @@ namespace Author.Utility
             await _accountStore.SaveAsync(new Account(identifier, new Dictionary<string, string>
             {
                 { "Identifier", identifier },
-                { "Type", entry.Type.ToString() },
+                { "Type", entry.Type.Name },
                 { "Name", entry.Name },
                 { "Digits", entry.Digits.ToString() },
                 { "Period", entry.Period.ToString() },
@@ -42,7 +42,7 @@ namespace Author.Utility
                 entries.Add(new Secret
                 {
                     Identifier = Guid.Parse(account.Properties["Identifier"]),
-                    Type = byte.Parse(account.Properties["Type"]),
+                    Type = OTP.Type.Parse(account.Properties["Type"]),
                     Name = account.Properties["Name"],
                     Digits = byte.Parse(account.Properties["Digits"]),
                     Period = byte.Parse(account.Properties["Period"]),

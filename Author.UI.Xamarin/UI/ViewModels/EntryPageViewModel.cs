@@ -41,8 +41,8 @@ namespace Author.UI.ViewModels
             }
         }
 
-        byte _type = OTP.Type.Time;
-        public byte Type
+        OTP.Type _type = OTP.Type.Time;
+        public OTP.Type Type
         {
             get { return _type; }
 

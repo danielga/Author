@@ -61,8 +61,8 @@ namespace Author.OTP
             }
         }
 
-        byte _type = 0;
-        public byte Type
+        Type _type = Type.Hash;
+        public Type Type
         {
             get { return _type; }
 
@@ -151,7 +151,6 @@ namespace Author.OTP
 
         public Entry(Secret secret)
         {
-            Debug.Assert(secret.Type >= 0 && secret.Type <= OTP.Type.Maximum, "Invalid type");
             Debug.Assert(!string.IsNullOrWhiteSpace(secret.Name), "Invalid name (null or only contains whitespace)");
             Debug.Assert(secret.Digits >= 4 && secret.Digits <= 8, "Invalid OTP length (must be between 4 and 8)");
             Debug.Assert(secret.Period >= 5 && secret.Period <= 60, "Invalid OTP period (must be between 5 and 60)");

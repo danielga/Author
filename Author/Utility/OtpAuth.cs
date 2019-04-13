@@ -6,7 +6,7 @@ namespace Author.Utility
 {
     public struct OtpAuth
     {
-        public byte Type;
+        public OTP.Type Type;
         public string Name;
         public string Secret;
         public string Issuer;
@@ -31,8 +31,7 @@ namespace Author.Utility
                 Period = 30
             };
 
-            if (!OTP.Type.FromName.TryGetValue(uri.Authority, out auth.Type))
-                throw new ArgumentException("Invalid type", nameof(uri));
+            auth.Type = OTP.Type.Parse(uri.Authority);
 
             var path = Uri.UnescapeDataString(uri.AbsolutePath);
             var match = LabelRegex.Match(path);

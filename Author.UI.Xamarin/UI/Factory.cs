@@ -6,8 +6,8 @@ namespace Author.UI
 {
     public static class Factory
     {
-        private static readonly Dictionary<byte, Action<EntryPageViewModel>> EntryPageSetups =
-            new Dictionary<byte, Action<EntryPageViewModel>>
+        private static readonly Dictionary<OTP.Type, Action<EntryPageViewModel>> EntryPageSetups =
+            new Dictionary<OTP.Type, Action<EntryPageViewModel>>
         {
             {OTP.Type.Hash, vm =>
             {
@@ -51,7 +51,7 @@ namespace Author.UI
             }}
         };
 
-        public static void SetupEntryPage(byte type, EntryPageViewModel vm)
+        public static void SetupEntryPage(OTP.Type type, EntryPageViewModel vm)
         {
             if (EntryPageSetups.TryGetValue(type, out var setup))
                 setup(vm);
