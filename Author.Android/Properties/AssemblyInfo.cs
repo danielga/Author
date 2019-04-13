@@ -6,7 +6,7 @@ using Xamarin.Forms.Xaml;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Author.Droid")]
+[assembly: AssemblyTitle("Author.Android")]
 [assembly: AssemblyDescription("A 2FA cross-platform application.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

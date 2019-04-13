@@ -22,5 +22,17 @@ namespace Author.iOS
 			LoadApplication(new UI.Pages.App());
 			return base.FinishedLaunching(app, options);
 		}
+
+		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+		{
+			if (url.Scheme == "otpauth")
+			{
+				UI.Pages.App app = Xamarin.Forms.Application.Current as UI.Pages.App;
+				app.HandleUriScheme(new System.Uri(url.ToString()));
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
