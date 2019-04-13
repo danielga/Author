@@ -26,7 +26,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Author</string>
 	<key>CFBundleIdentifier</key>
-	<string>xyz.metaman.Author</string>
+	<string>xyz.metaman.author.ios</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>CFBundleIconFiles</key>
@@ -52,8 +52,25 @@
 	<key>CFBundleShortVersionString</key>
 	<string>0.1.0.0</string>
 	<key>XSLaunchImageAssets</key>
-	<string>Resources/Media.xcassets/LaunchImages.launchimage</string>
+	<string>Resources/Media.xcassets/LaunchImage.launchimage</string>
+	<key>CFBundleName</key>
+	<string>Author</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Author</string>
+			<key>CFBundleURLTypes</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>otpauth</string>
+			</array>
+			<key>CFBundleURLIconFile</key>
+			<string>Icon-Small@2x</string>
+		</dict>
+	</array>
 	<key>XSAppIconAssets</key>
-	<string>Resources/Media.xcassets/AppIcons.appiconset</string>
+	<string>Resources/Media.xcassets/AppIcon.appiconset</string>
 </dict>
 </plist>

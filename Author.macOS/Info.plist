@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>Author.macOS</string>
+	<string>Author</string>
 	<key>CFBundleIdentifier</key>
-	<string>xyz.metaman.Author-macOS</string>
+	<string>xyz.metaman.author.macos</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
@@ -28,5 +28,18 @@
 	<string>0.1.0.0</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>otpauth</string>
+			</array>
+			<key>CFBundleURLTypes</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Author</string>
+		</dict>
+	</array>
 </dict>
 </plist>

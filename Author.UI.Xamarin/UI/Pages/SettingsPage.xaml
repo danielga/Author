@@ -11,9 +11,16 @@
   </ContentPage.BindingContext>
   <ContentPage.ToolbarItems>
     <ToolbarItem
-      Icon="Accept.png"
       Text="Save settings"
       Order="Primary"
-      Command="{Binding AcceptCommand}" />
+      Command="{Binding AcceptCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_save" />
+          <On Platform="macOS" Value="ic_save.png" />
+          <On Platform="UWP" Value="Assets/ic_save.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
   </ContentPage.ToolbarItems>
 </ContentPage>
