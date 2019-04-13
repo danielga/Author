@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>Author.macOS</string>
+	<string>Author</string>
 	<key>CFBundleIdentifier</key>
-	<string>xyz.metaman.Author-macOS</string>
+	<string>xyz.metaman.author.macos</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
