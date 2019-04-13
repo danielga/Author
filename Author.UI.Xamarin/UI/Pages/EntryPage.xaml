@@ -20,10 +20,17 @@
   </ContentPage.Behaviors>
   <ContentPage.ToolbarItems>
     <ToolbarItem
-      Icon="Accept.png"
       Text="Accept"
       Order="Primary"
-      Command="{Binding AcceptCommand}" />
+      Command="{Binding AcceptCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_done" />
+          <On Platform="macOS" Value="ic_done.png" />
+          <On Platform="UWP" Value="Assets/ic_done.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
   </ContentPage.ToolbarItems>
   <ScrollView>
     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">

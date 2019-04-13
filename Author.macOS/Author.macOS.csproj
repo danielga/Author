@@ -122,10 +122,24 @@
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\About.png" />
-    <BundleResource Include="Resources\Accept.png" />
-    <BundleResource Include="Resources\Add.png" />
-    <BundleResource Include="Resources\Settings.png" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\ic_info%402x.png" />
+    <BundleResource Include="Resources\ic_info%403x.png" />
+    <BundleResource Include="Resources\ic_info.png" />
+    <BundleResource Include="Resources\ic_settings%402x.png" />
+    <BundleResource Include="Resources\ic_settings%403x.png" />
+    <BundleResource Include="Resources\ic_settings.png" />
+    <BundleResource Include="Resources\ic_add%402x.png" />
+    <BundleResource Include="Resources\ic_add%403x.png" />
+    <BundleResource Include="Resources\ic_add.png" />
+    <BundleResource Include="Resources\ic_save%402x.png" />
+    <BundleResource Include="Resources\ic_save%403x.png" />
+    <BundleResource Include="Resources\ic_save.png" />
+    <BundleResource Include="Resources\ic_done%402x.png" />
+    <BundleResource Include="Resources\ic_done%403x.png" />
+    <BundleResource Include="Resources\ic_done.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.3.6.0.293080\build\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.3.6.0.293080\build\Xamarin.Forms.targets')" />

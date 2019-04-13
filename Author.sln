@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Author.macOS", "Author.macO
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Author.UI.Xamarin\Author.UI.Xamarin.projitems*{000328a8-f171-4625-bcf4-75cf2c278776}*SharedItemsImports = 4
+		Author\Author.projitems*{000328a8-f171-4625-bcf4-75cf2c278776}*SharedItemsImports = 4
 		Author.UI.Xamarin\Author.UI.Xamarin.projitems*{36f58bd1-9ea1-4d40-9cda-9893f07ab65b}*SharedItemsImports = 13
 		Author.UI.Xamarin\Author.UI.Xamarin.projitems*{4f3ac2a9-539a-4a30-a2b1-0b0fd87dfa0f}*SharedItemsImports = 4
 		Author\Author.projitems*{4f3ac2a9-539a-4a30-a2b1-0b0fd87dfa0f}*SharedItemsImports = 4

@@ -22,20 +22,41 @@
   </ContentPage.Behaviors>
   <ContentPage.ToolbarItems>
     <ToolbarItem
-      Icon="Add.png"
       Text="Add OTP entry"
       Order="Primary"
-      Command="{Binding AddCommand}" />
+      Command="{Binding AddCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_add" />
+          <On Platform="macOS" Value="ic_add.png" />
+          <On Platform="UWP" Value="Assets/ic_add.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
     <ToolbarItem
-      Icon="Settings.png"
       Text="Settings"
       Order="Secondary"
-      Command="{Binding SettingsCommand}" />
+      Command="{Binding SettingsCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_settings" />
+          <On Platform="macOS" Value="ic_settings.png" />
+          <On Platform="UWP" Value="Assets/ic_settings.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
     <ToolbarItem
-      Icon="About.png"
       Text="About"
       Order="Secondary"
-      Command="{Binding AboutCommand}" />
+      Command="{Binding AboutCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_info" />
+          <On Platform="macOS" Value="ic_info.png" />
+          <On Platform="UWP" Value="Assets/ic_info.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
   </ContentPage.ToolbarItems>
   <ListView
     HorizontalOptions="FillAndExpand"
