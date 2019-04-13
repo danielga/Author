@@ -53,6 +53,8 @@
 	<string>0.1.0.0</string>
 	<key>XSLaunchImageAssets</key>
 	<string>Resources/Media.xcassets/LaunchImages.launchimage</string>
+	<key>CFBundleName</key>
+	<string>Author</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
