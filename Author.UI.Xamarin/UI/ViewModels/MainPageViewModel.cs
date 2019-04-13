@@ -13,12 +13,11 @@ namespace Author.UI.ViewModels
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
-        static readonly EntryManager _entryManager = new EntryManager();
-
-        static readonly EntryPage _entryPage = new EntryPage();
-        static readonly EntryPageViewModel _entryPageVM = null;
-        static readonly SettingsPage _settingsPage = new SettingsPage();
-        static readonly AboutPage _aboutPage = new AboutPage();
+        private static readonly EntryManager _entryManager = new EntryManager();
+        private static readonly EntryPage _entryPage = new EntryPage();
+        private static readonly EntryPageViewModel _entryPageVM = null;
+        private static readonly SettingsPage _settingsPage = new SettingsPage();
+        private static readonly AboutPage _aboutPage = new AboutPage();
 
         public MainPage Page = null;
 
@@ -26,15 +25,9 @@ namespace Author.UI.ViewModels
 
         public object SelectedItem
         {
-            get
-            {
-                return null;
-            }
+            get => null;
 
-            set
-            {
-                OnPropertyChanged();
-            }
+            set => OnPropertyChanged();
         }
 
         public Command AppearingCommand { get; private set; }
@@ -89,7 +82,9 @@ namespace Author.UI.ViewModels
 #if DEBUG
             // Xamarin.Forms Previewer data
             if (EntriesList.Count != 0)
+            {
                 return;
+            }
 
             const string Chars = Base32.ValidCharacters;
 
@@ -111,73 +106,81 @@ namespace Author.UI.ViewModels
 #endif
         }
 
-        void OnAppearing()
+        private void OnAppearing()
         {
             _entryManager.EnableUpdate();
         }
 
-        void OnDisappearing()
+        private void OnDisappearing()
         {
             _entryManager.DisableUpdate();
         }
 
-        void GoToPreviousPage()
+        private void GoToPreviousPage()
         {
             NavigationPage navPage = (NavigationPage)Page?.Parent;
             navPage?.PopAsync();
         }
 
-        void SetPage(Page page)
+        private void SetPage(Page page)
         {
             NavigationPage navPage = (NavigationPage)Page?.Parent;
             navPage?.PushAsync(page);
         }
 
-        void OnAddTapped()
+        public void SetAddEntryPageAsMainPage()
         {
-            SetPage(_entryPage);
-
             _entryPageVM.Entry = null;
+            if (Device.RuntimePlatform == Device.macOS ||
+                Device.RuntimePlatform == Device.UWP)
+            {
+                SetPage(_entryPage);
+            }
+            else
+            {
+                Application.Current.MainPage = new NavigationPage(_entryPage);
+            }
         }
 
-        void OnSettingsTapped()
+        private void OnAddTapped()
+        {
+            _entryPageVM.Entry = null;
+            SetPage(_entryPage);
+        }
+
+        private void OnSettingsTapped()
         {
             SetPage(_settingsPage);
         }
 
-        void OnAboutTapped()
+        private void OnAboutTapped()
         {
             SetPage(_aboutPage);
         }
 
         // This event is not triggered when we go back to this page
-        void OnItemAppearing(object ev)
+        private void OnItemAppearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
             _entryManager.OnEntryAppearing((Entry)e.Item);
         }
 
         // This event is triggered when we navigate to another page
-        void OnItemDisappearing(object ev)
+        private void OnItemDisappearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
             _entryManager.OnEntryDisappearing((Entry)e.Item);
         }
 
-        void OnItemEdit(object context)
+        private void OnItemEdit(object context)
         {
-            Entry entry = (Entry)context;
-
+            _entryPageVM.Entry = (Entry)context;
             SetPage(_entryPage);
-
-            _entryPageVM.Entry = entry;
         }
 
-        void OnItemDelete(object context)
+        private void OnItemDelete(object context)
         {
-            Entry entry = (Entry)context;
-
-            EntriesList.Remove(entry);
+            EntriesList.Remove((Entry)context);
 
             Acr.UserDialogs.UserDialogs.Instance.Toast(
                 new Acr.UserDialogs.ToastConfig("Deleted entry")
@@ -185,7 +188,7 @@ namespace Author.UI.ViewModels
                 .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
         }
 
-        async void OnItemTapped(object context)
+        private async void OnItemTapped(object context)
         {
             ItemTappedEventArgs args = (ItemTappedEventArgs)context;
             Entry entry = (Entry)args.Item;
@@ -202,7 +205,7 @@ namespace Author.UI.ViewModels
 
         }
 
-        void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

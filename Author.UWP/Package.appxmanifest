@@ -26,6 +26,11 @@
           <uap:Rotation Preference="landscapeFlipped" />
         </uap:InitialRotationPreference>
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="otpauth" />
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 </Package>

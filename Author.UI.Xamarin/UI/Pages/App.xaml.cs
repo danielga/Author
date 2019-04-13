@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using Author.UI.ViewModels;
+using System;
+using Xamarin.Forms;
 
 namespace Author.UI.Pages
 {
@@ -22,6 +24,13 @@ namespace Author.UI.Pages
         protected override void OnSleep()
         {
 
+        }
+
+        public void HandleUriScheme(Uri uri)
+        {
+            NavigationPage navPage = MainPage as NavigationPage;
+            MainPageViewModel viewModel = navPage?.CurrentPage.BindingContext as MainPageViewModel;
+            viewModel?.SetAddEntryPageAsMainPage();
         }
     }
 }
