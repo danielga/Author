@@ -1,32 +1,87 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Author.OTP
 {
-    public static class Type
+    public struct Type : IEquatable<Type>
     {
-        public const byte Hash = 0;
-        public const byte Time = 1;
-        public const byte Steam = 2;
-        public const byte Blizzard = 3;
-        public const byte Authy = 4;
-        public const byte Maximum = Authy;
-
-        public static readonly Dictionary<string, byte> FromName = new Dictionary<string, byte>
+        private enum ValueEnum
         {
-            { "hotp", Hash },
-            { "totp", Time },
-            { "steam", Steam },
-            { "blizzard", Blizzard },
-            { "authy", Authy }
+            Hash = 0,
+            Time = 1,
+            Steam = 2,
+            Blizzard = 3,
+            Authy = 4,
+            Maximum = Authy
+        }
+
+        public string Name { get; private set; }
+        private readonly ValueEnum Value;
+
+        public static readonly Type Hash = new Type("hotp", ValueEnum.Hash);
+        public static readonly Type Time = new Type("totp", ValueEnum.Time);
+        public static readonly Type Steam = new Type("steam", ValueEnum.Steam);
+        public static readonly Type Blizzard = new Type("blizzard", ValueEnum.Blizzard);
+        public static readonly Type Authy = new Type("authy", ValueEnum.Authy);
+
+        private static readonly Dictionary<string, Type> FromName = new Dictionary<string, Type>
+        {
+            { Hash.Name, Hash },
+            { Time.Name, Time },
+            { Steam.Name, Steam },
+            { Blizzard.Name, Blizzard },
+            { Authy.Name, Authy }
         };
 
-        public static readonly Dictionary<byte, string> Name = new Dictionary<byte, string>
+        private Type(string name, ValueEnum value)
         {
-            { Hash, "hotp" },
-            { Time, "totp" },
-            { Steam, "steam" },
-            { Blizzard, "blizzard" },
-            { Authy, "authy" }
-        };
+            Name = name;
+            Value = value;
+        }
+
+        public bool Equals(Type other)
+        {
+            return Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Type && Equals((Type)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public static bool operator ==(Type lhs, Type rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(Type lhs, Type rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        public static Type Parse(string input)
+        {
+            if (input == null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
+            if (!FromName.TryGetValue(input, out Type value))
+            {
+                throw new ArgumentException("Invalid type name", nameof(input));
+            }
+
+            return value;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
