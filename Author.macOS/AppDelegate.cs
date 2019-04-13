@@ -30,8 +30,5 @@ namespace Author.macOS
             LoadApplication(new UI.Pages.App());
             base.DidFinishLaunching(notification);
         }
-
-        public override void WillTerminate(NSNotification notification)
-        {}
     }
 }
