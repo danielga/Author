@@ -182,10 +182,10 @@ namespace Author.UI.ViewModels
         {
             EntriesList.Remove((Entry)context);
 
-            Acr.UserDialogs.UserDialogs.Instance.Toast(
-                new Acr.UserDialogs.ToastConfig("Deleted entry")
+            Notification.Create("Deleted entry")
                 .SetDuration(TimeSpan.FromSeconds(3))
-                .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+                .SetPosition(Notification.Position.Bottom)
+                .Show();
         }
 
         private async void OnItemTapped(object context)
@@ -195,10 +195,10 @@ namespace Author.UI.ViewModels
             try
             {
                 await Xamarin.Essentials.Clipboard.SetTextAsync(entry.Code);
-                Acr.UserDialogs.UserDialogs.Instance.Toast(
-                    new Acr.UserDialogs.ToastConfig("Copied OTP")
+                Notification.Create("Copied OTP")
                     .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+                    .SetPosition(Notification.Position.Bottom)
+                    .Show();
             }
             catch (NotImplementedException)
             {}

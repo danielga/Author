@@ -15,10 +15,10 @@ namespace Author.UI.ViewModels
         void OnAcceptTapped()
         {
             // Save settings
-            Acr.UserDialogs.UserDialogs.Instance.Toast(
-                new Acr.UserDialogs.ToastConfig("Saved settings")
+            Notification.Create("Saved settings")
                 .SetDuration(TimeSpan.FromSeconds(3))
-                .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+                .SetPosition(Notification.Position.Bottom)
+                .Show();
         }
     }
 }
