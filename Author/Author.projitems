@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)OTP\TimeBased.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OTP\Type.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Base32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Clipboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Cryptography.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Database.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utility\Hexadecimal.cs" />
