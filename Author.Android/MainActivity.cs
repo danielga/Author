@@ -5,7 +5,7 @@ using Android.OS;
 
 namespace Author.Android
 {
-    [Activity(Label = "Author",
+    [Activity(Label = "@string/application_name",
         Icon = "@drawable/icon",
         Theme = "@style/Theme.Splash",
         MainLauncher = true,
@@ -19,11 +19,10 @@ namespace Author.Android
     {
         protected override void OnCreate(Bundle bundle)
         {
-            SetTheme(Resource.Style.MainTheme);
-
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
+            SetTheme(Resource.Style.Theme_Main);
             base.OnCreate(bundle);
 
             Xamarin.Forms.Forms.Init(this, bundle);

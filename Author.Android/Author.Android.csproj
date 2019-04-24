@@ -345,7 +345,6 @@
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-mdpi\Icon.png" />
     <AndroidResource Include="Resources\drawable\ic_add.xml" />
     <AndroidResource Include="Resources\drawable\ic_done.xml" />
     <AndroidResource Include="Resources\drawable\ic_info.xml" />
@@ -387,9 +386,20 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-mdpi\SplashScreen.xml" />
+    <AndroidResource Include="Resources\drawable-mdpi\splash_screen.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-mdpi\splash_logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\colors.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-mdpi\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\strings.xml" />
+  </ItemGroup>
   <Import Project="..\Author\Author.projitems" Label="Shared" Condition="Exists('..\Author\Author.projitems')" />
   <Import Project="..\Author.UI.Xamarin\Author.UI.Xamarin.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
