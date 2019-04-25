@@ -213,10 +213,10 @@ namespace Author.UI.ViewModels
             if (string.IsNullOrWhiteSpace(Name) ||
                 string.IsNullOrWhiteSpace(Secret))
             {
-                Acr.UserDialogs.UserDialogs.Instance.Toast(
-                    new Acr.UserDialogs.ToastConfig("Detected invalid properties for the entry")
+                Notification.Create("Detected invalid properties for the entry")
                     .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+                    .SetPosition(Notification.Position.Bottom)
+                    .Show();
                 return;
             }
 
@@ -234,10 +234,10 @@ namespace Author.UI.ViewModels
 
                 MessagingCenter.Send(new EditEntry { Entry = entry }, "EditEntry");
 
-                Acr.UserDialogs.UserDialogs.Instance.Toast(
-                    new Acr.UserDialogs.ToastConfig("Saved edited entry")
+                Notification.Create("Saved edited entry")
                     .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+                    .SetPosition(Notification.Position.Bottom)
+                    .Show();
             }
             else
             {
@@ -253,10 +253,10 @@ namespace Author.UI.ViewModels
                     })
                 }, "AddEntry");
 
-                Acr.UserDialogs.UserDialogs.Instance.Toast(
-                    new Acr.UserDialogs.ToastConfig("Added new entry")
+                Notification.Create("Added new entry")
                     .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Acr.UserDialogs.ToastPosition.Bottom));
+                    .SetPosition(Notification.Position.Bottom)
+                    .Show();
             }
         }
 
