@@ -1,8 +1,6 @@
 ﻿using System;
-using Acr.UserDialogs;
 using AppKit;
 using Foundation;
-using Xamarin.Forms;
 
 namespace Author.macOS
 {
@@ -33,8 +31,8 @@ namespace Author.macOS
 
         public override void DidFinishLaunching(NSNotification notification)
         {
-            Forms.Init();
-            UserDialogs.Instance = new CustomUserDialogs(window);
+            Xamarin.Forms.Forms.Init();
+            Acr.UserDialogs.UserDialogs.Instance = new CustomUserDialogs(window);
             LoadApplication(new UI.Pages.App());
             base.DidFinishLaunching(notification);
 
@@ -48,7 +46,7 @@ namespace Author.macOS
 
         private void HandleUri(Uri uri)
         {
-            UI.Pages.App app = Application.Current as UI.Pages.App;
+            UI.Pages.App app = Xamarin.Forms.Application.Current as UI.Pages.App;
             app.HandleUriScheme(uri);
         }
 

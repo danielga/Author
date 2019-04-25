@@ -5,12 +5,11 @@ using Android.OS;
 
 namespace Author.Android
 {
-    [Activity(Label = "Author",
+    [Activity(Label = "@string/application_name",
         Icon = "@drawable/icon",
         Theme = "@style/Theme.Splash",
         MainLauncher = true,
-        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
-        LaunchMode = LaunchMode.SingleTop)]
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     [IntentFilter(new[] { Intent.ActionView },
         DataScheme = "otpauth",
         Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
@@ -19,11 +18,10 @@ namespace Author.Android
     {
         protected override void OnCreate(Bundle bundle)
         {
-            SetTheme(Resource.Style.MainTheme);
-
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
+            SetTheme(Resource.Style.Theme_Main);
             base.OnCreate(bundle);
 
             Xamarin.Forms.Forms.Init(this, bundle);
@@ -38,17 +36,12 @@ namespace Author.Android
             }
         }
 
-        protected override void OnNewIntent(Intent intent)
-        {
-            HandleUri(intent);
-        }
-
         private void HandleUri(Intent intent)
         {
-            if (intent.Data?.Scheme == "otpauth")
+            if (intent.Scheme == "otpauth")
             {
                 UI.Pages.App app = Xamarin.Forms.Application.Current as UI.Pages.App;
-                app.HandleUriScheme(new System.Uri(Intent.Data.ToString()));
+                app.HandleUriScheme(new System.Uri(Intent.DataString));
             }
         }
     }
