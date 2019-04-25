@@ -194,7 +194,7 @@ namespace Author.UI.ViewModels
             Entry entry = (Entry)args.Item;
             try
             {
-                await Xamarin.Essentials.Clipboard.SetTextAsync(entry.Code);
+                await Clipboard.SetTextAsync(entry.Code);
                 Notification.Create("Copied OTP")
                     .SetDuration(TimeSpan.FromSeconds(3))
                     .SetPosition(Notification.Position.Bottom)
