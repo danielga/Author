@@ -140,8 +140,8 @@
       <HintPath>..\packages\PInvoke.Windows.Core.0.5.184\lib\netstandard2.0\PInvoke.Windows.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Splat, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Splat.7.0.8\lib\monoandroid81\Splat.dll</HintPath>
+    <Reference Include="Splat, Version=7.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Splat.7.2.1\lib\monoandroid81\Splat.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections" />
