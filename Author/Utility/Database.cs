@@ -2,64 +2,81 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Author.Utility.Cryptography;
+using Xamarin.Essentials;
 
 namespace Author.Utility
 {
     public static class Database
     {
         private const string ServiceName = "Author";
+        private const string IdentifiersName = ServiceName + ".List";
+        private const string IdentifiersSeparator = ";";
 
-        private static AccountStore _accountStore = CreateAccountStore();
+        private static readonly HashSet<string> StoredIdentifiers = LoadIdentifiers();
+
+        private static HashSet<string> LoadIdentifiers()
+        {
+            Task<string> task = SecureStorage.GetAsync(IdentifiersName);
+            task.Wait();
+            string identifiers = task.Result;
+            if (identifiers == null)
+                return null;
+
+            return new HashSet<string>(identifiers.Split(IdentifiersSeparator));
+        }
+
+        private static async Task SaveIdentifiers(HashSet<string> identifiers)
+        {
+            if (identifiers.Count == 0)
+            {
+                SecureStorage.Remove(IdentifiersName);
+                return;
+            }
+
+            string ids = string.Join(IdentifiersSeparator, identifiers);
+            await SecureStorage.SetAsync(IdentifiersName, ids);
+        }
 
         public static async Task AddEntry(Secret entry)
         {
             string identifier = entry.Identifier.ToString();
-            await _accountStore.SaveAsync(new Account(identifier, new Dictionary<string, string>
-            {
-                { "Identifier", identifier },
-                { "Type", entry.Type.Name },
-                { "Name", entry.Name },
-                { "Digits", entry.Digits.ToString() },
-                { "Period", entry.Period.ToString() },
-                { "Data", entry.Data }
-            }), ServiceName);
+            await SecureStorage.SetAsync(ServiceName + "." + identifier, entry.ToString());
+            StoredIdentifiers.Add(identifier);
+            await SaveIdentifiers(StoredIdentifiers);
         }
 
-        public static async Task RemoveEntry(Secret entry)
+        public static async Task<bool> RemoveEntry(Secret entry)
         {
-            await _accountStore.DeleteAsync(new Account(entry.Identifier.ToString()), ServiceName);
+            string identifier = entry.Identifier.ToString();
+            bool success = SecureStorage.Remove(ServiceName + "." + identifier);
+            if (success)
+            {
+                StoredIdentifiers.Remove(identifier);
+                await SaveIdentifiers(StoredIdentifiers);
+            }
+
+            return success;
         }
 
         public static async Task<List<Secret>> GetEntries()
         {
-            List<Account> accounts = await _accountStore.FindAccountsForServiceAsync(ServiceName);
-            if (accounts == null)
-                return null;
-
             List<Secret> entries = new List<Secret>();
-            foreach (Account account in accounts)
-                entries.Add(new Secret
-                {
-                    Identifier = Guid.Parse(account.Properties["Identifier"]),
-                    Type = OTP.Type.Parse(account.Properties["Type"]),
-                    Name = account.Properties["Name"],
-                    Digits = byte.Parse(account.Properties["Digits"]),
-                    Period = byte.Parse(account.Properties["Period"]),
-                    Data = account.Properties["Data"]
-                });
+            foreach (string identifier in StoredIdentifiers)
+            {
+                string entryString = await SecureStorage.GetAsync(ServiceName + "." + identifier);
+                entries.Add(Secret.Parse(entryString));
+            }
 
             return entries;
         }
 
         public static async Task RemoveEntries()
         {
-            IEnumerable<Account> accounts = await _accountStore.FindAccountsForServiceAsync(ServiceName);
-            if (accounts == null)
-                return;
+            foreach (string identifier in StoredIdentifiers)
+                SecureStorage.Remove(ServiceName + "." + identifier);
 
-            foreach (Account account in accounts)
-                await _accountStore.DeleteAsync(account, ServiceName);
+            StoredIdentifiers.Clear();
+            await SaveIdentifiers(StoredIdentifiers);
         }
     }
 }
