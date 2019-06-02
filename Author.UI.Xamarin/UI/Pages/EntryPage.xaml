@@ -45,7 +45,7 @@
         Margin="5"
         HorizontalOptions="Start"
         VerticalOptions="Center" />
-      <Picker Margin="5" SelectedIndex="{Binding Type, Mode=TwoWay}">
+      <Picker Margin="5" SelectedIndex="{Binding Entry.Secret.Type, Converter={StaticResource TypeToIndexConverter}, Mode=TwoWay}">
         <Picker.Items>
           <x:String>Hash based</x:String>
           <x:String>Time based</x:String>
@@ -64,7 +64,7 @@
         Margin="5"
         HorizontalOptions="FillAndExpand"
         Placeholder="Name"
-        Text="{Binding Name, Mode=TwoWay}" />
+        Text="{Binding Entry.Secret.Name, Mode=TwoWay}" />
 
       <Label
         Text="Shared secret"
@@ -74,13 +74,13 @@
         Margin="5"
         HorizontalOptions="FillAndExpand"
         Placeholder="Shared secret"
-        Text="{Binding Secret, Mode=TwoWay}" />
+        Text="{Binding Entry.Secret.Data, Mode=TwoWay}" />
 
       <Label Text="Code length" Margin="5" HorizontalOptions="Start" />
       <Picker
         IsEnabled="{Binding LengthPickerEnabled}"
         Margin="5"
-        SelectedIndex="{Binding LengthIndex, Mode=TwoWay}">
+        SelectedIndex="{Binding Entry.Secret.Digits, Converter={StaticResource DigitsToIndexConverter}, Mode=TwoWay}">
         <Picker.Items>
           <x:String>4</x:String>
           <x:String>5</x:String>
@@ -91,7 +91,7 @@
       </Picker>
 
       <Label
-        Text="{Binding Period, StringFormat='Timer period: {0} seconds'}"
+        Text="{Binding Entry.Secret.Period, StringFormat='Timer period: {0} seconds'}"
         Margin="5"
         HorizontalOptions="Start" />
       <Slider
@@ -100,7 +100,7 @@
         Maximum="60"
         Minimum="5"
         HorizontalOptions="FillAndExpand"
-        Value="{Binding Period, Mode=TwoWay}" />
+        Value="{Binding Entry.Secret.Period, Mode=TwoWay}" />
     </StackLayout>
   </ScrollView>
 </ContentPage>

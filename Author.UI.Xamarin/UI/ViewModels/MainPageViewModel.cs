@@ -3,7 +3,6 @@ using Author.UI.Messages;
 using Author.UI.Pages;
 using Author.Utility;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,7 +12,6 @@ namespace Author.UI.ViewModels
 {
     public class MainPageViewModel : INotifyPropertyChanged
     {
-        private static readonly EntryManager _entryManager = new EntryManager();
         private static readonly EntryPage _entryPage = new EntryPage();
         private static readonly EntryPageViewModel _entryPageVM = null;
         private static readonly SettingsPage _settingsPage = new SettingsPage();
@@ -21,7 +19,7 @@ namespace Author.UI.ViewModels
 
         public MainPage Page = null;
 
-        public ObservableCollection<Entry> EntriesList => _entryManager.Entries;
+        public EntryManager EntriesManager { get; } = new EntryManager();
 
         public object SelectedItem
         {
@@ -50,23 +48,17 @@ namespace Author.UI.ViewModels
 
         public MainPageViewModel()
         {
-            MessagingCenter.Subscribe<AddEntry>(this, "AddEntry", (msg) =>
+            MessagingCenter.Subscribe<AddEntry>(this, "AddEntry", msg =>
             {
-                EntriesList.Add(msg.Entry);
+                EntriesManager.Entries.Add(msg.Entry);
                 GoToPreviousPage();
             });
 
-            MessagingCenter.Subscribe<DeleteEntry>(this, "DeleteEntry", (msg) => OnItemDelete(msg.Entry));
+            MessagingCenter.Subscribe<DeleteEntry>(this, "DeleteEntry", msg => OnItemDelete(msg.Entry));
 
-            MessagingCenter.Subscribe<EditEntry>(this, "EditEntry", (msg) =>
-            {
-                GoToPreviousPage();
+            MessagingCenter.Subscribe<EditEntry>(this, "EditEntry", msg => GoToPreviousPage());
 
-                int index = EntriesList.IndexOf(msg.Entry);
-                EntriesList[index] = msg.Entry;
-            });
-
-            MessagingCenter.Subscribe<RequestEditEntry>(this, "RequestEditEntry", (msg) => OnItemEdit(msg.Entry));
+            MessagingCenter.Subscribe<RequestEditEntry>(this, "RequestEditEntry", msg => OnItemEdit(msg.Entry));
 
             AppearingCommand = new Command(OnAppearing);
             DisappearingCommand = new Command(OnDisappearing);
@@ -81,7 +73,7 @@ namespace Author.UI.ViewModels
 
 #if DEBUG
             // Xamarin.Forms Previewer data
-            if (EntriesList.Count != 0)
+            if (EntriesManager.Entries.Count != 0)
             {
                 return;
             }
@@ -94,13 +86,12 @@ namespace Author.UI.ViewModels
             {
                 Entry entry = new Entry(new Secret
                 {
-                    Type = OTP.Type.Time,
                     Name = "Hello world " + i,
                     Digits = (byte)(4 + i),
                     Period = (byte)(5 + i),
                     Data = new string(Enumerable.Repeat(Chars, 32).Select(s => s[random.Next(s.Length)]).ToArray())
                 });
-                EntriesList.Add(entry);
+                EntriesManager.Entries.Add(entry);
                 entry.UpdateCode(timestamp);
             }
 #endif
@@ -108,12 +99,12 @@ namespace Author.UI.ViewModels
 
         private void OnAppearing()
         {
-            _entryManager.EnableUpdate();
+            EntriesManager.EnableUpdate();
         }
 
         private void OnDisappearing()
         {
-            _entryManager.DisableUpdate();
+            EntriesManager.DisableUpdate();
         }
 
         private void GoToPreviousPage()
@@ -130,7 +121,7 @@ namespace Author.UI.ViewModels
 
         public void SetAddEntryPageAsMainPage()
         {
-            _entryPageVM.Entry = null;
+            _entryPageVM.AddEntry();
             if (Device.RuntimePlatform == Device.macOS ||
                 Device.RuntimePlatform == Device.UWP)
             {
@@ -144,7 +135,7 @@ namespace Author.UI.ViewModels
 
         private void OnAddTapped()
         {
-            _entryPageVM.Entry = null;
+            _entryPageVM.AddEntry();
             SetPage(_entryPage);
         }
 
@@ -162,30 +153,35 @@ namespace Author.UI.ViewModels
         private void OnItemAppearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            _entryManager.OnEntryAppearing((Entry)e.Item);
+            EntriesManager.OnEntryAppearing((Entry)e.Item);
         }
 
         // This event is triggered when we navigate to another page
         private void OnItemDisappearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            _entryManager.OnEntryDisappearing((Entry)e.Item);
+            EntriesManager.OnEntryDisappearing((Entry)e.Item);
         }
 
         private void OnItemEdit(object context)
         {
-            _entryPageVM.Entry = (Entry)context;
+            _entryPageVM.EditEntry((Entry)context);
             SetPage(_entryPage);
         }
 
         private void OnItemDelete(object context)
         {
-            EntriesList.Remove((Entry)context);
+            EntriesManager.Entries.Remove((Entry)context);
 
-            Notification.Create("Deleted entry")
-                .SetDuration(TimeSpan.FromSeconds(3))
-                .SetPosition(Notification.Position.Bottom)
-                .Show();
+            try
+            {
+                Notification.Create("Deleted entry")
+                    .SetDuration(TimeSpan.FromSeconds(3))
+                    .SetPosition(Notification.Position.Bottom)
+                    .Show();
+            }
+            catch (NotImplementedException)
+            { }
         }
 
         private async void OnItemTapped(object context)
@@ -194,15 +190,14 @@ namespace Author.UI.ViewModels
             Entry entry = (Entry)args.Item;
             try
             {
-                await Clipboard.SetTextAsync(entry.Code);
+                await Clipboard.SetTextAsync(entry.Secret.Code);
                 Notification.Create("Copied OTP")
                     .SetDuration(TimeSpan.FromSeconds(3))
                     .SetPosition(Notification.Position.Bottom)
                     .Show();
             }
             catch (NotImplementedException)
-            {}
-
+            { }
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)

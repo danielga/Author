@@ -1,22 +1,242 @@
-﻿using System;
+﻿using Author.Utility;
+using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Author.OTP
 {
-    public struct Secret
+    public class Secret : INotifyPropertyChanged
     {
-        public Guid Identifier;
-        public string Name;
-        public Type Type { get; set; }
-        public string Issuer { get; set; }
-        public HashAlgorithmName Algorithm { get; set; }
-        public byte Digits { get; set; }
-        public long Counter { get; set; }
-        public byte Period { get; set; }
-        public string Data { get; set; }
+        private bool _dirtySecret = true;
+        private IBaseGenerator _generator = null;
+        private long _nextUpdate = long.MinValue;
+
+        private Guid _identifier = Guid.NewGuid();
+        public Guid Identifier
+        {
+            get => _identifier;
+
+            set
+            {
+                if (value == Guid.Empty)
+                {
+                    throw new ArgumentException("Invalid identifier");
+                }
+
+                if (value != _identifier)
+                {
+                    _identifier = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _name = null;
+        public string Name
+        {
+            get => _name;
+
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("Invalid name");
+                }
+
+                if (value != _name)
+                {
+                    _name = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Type _type = Type.Time;
+        public Type Type
+        {
+            get => _type;
+
+            set
+            {
+                if (string.IsNullOrEmpty(value.Name))
+                {
+                    throw new ArgumentException("Invalid type");
+                }
+
+                if (value != _type)
+                {
+                    _type = value;
+                    _dirtySecret = true;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _issuer = null;
+        public string Issuer
+        {
+            get => _issuer;
+
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("Invalid issuer");
+                }
+
+                if (value != _issuer)
+                {
+                    _issuer = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private HashAlgorithmName _algorithm = HashBased.DefaultAlgorithm;
+        public HashAlgorithmName Algorithm
+        {
+            get => _algorithm;
+
+            set
+            {
+                if (string.IsNullOrEmpty(value.Name))
+                {
+                    throw new ArgumentException("Invalid algorithm");
+                }
+
+                if (value != _algorithm)
+                {
+                    _algorithm = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private byte _digits = 6;
+        public byte Digits
+        {
+            get => _digits;
+
+            set
+            {
+                if (value < 4 || value > 8)
+                {
+                    throw new ArgumentException("Invalid number of digits (must be between 4 and 8)");
+                }
+
+                if (value != _digits)
+                {
+                    _digits = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private long _counter = 0;
+        public long Counter
+        {
+            get => _counter;
+
+            set
+            {
+                if (value != _counter)
+                {
+                    _counter = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private byte _period = 30;
+        public byte Period
+        {
+            get => _period;
+
+            set
+            {
+                if (value < 5 || value > 60)
+                {
+                    throw new ArgumentException("Invalid period (must be between 5 and 60)");
+                }
+
+                if (value != _period)
+                {
+                    _period = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _data = null;
+        public string Data
+        {
+            get => _data;
+
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("Invalid secret data");
+                }
+
+                if (value != _data)
+                {
+                    _data = value;
+                    _dirtySecret = true;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _code = null;
+        public string Code
+        {
+            get
+            {
+                UpdateCode(Time.GetCurrent());
+                return _code;
+            }
+
+            private set
+            {
+                if (value != _code)
+                {
+                    _code = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public string GetCode(long timestamp)
+        {
+            if (_dirtySecret)
+            {
+                _dirtySecret = false;
+                _generator = Factory.CreateGenerator(Type, Data, Algorithm);
+            }
+
+            return _generator.GetCode(timestamp, Digits, Period);
+        }
+
+        public virtual void UpdateCode(long timestamp, bool force = false)
+        {
+            if (force || timestamp >= _nextUpdate)
+            {
+                _nextUpdate = timestamp + Period - timestamp % Period;
+                Code = GetCode(timestamp);
+            }
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private static readonly Regex LabelRegex = new Regex("^/(.+): *(.+)$");
 
@@ -34,60 +254,54 @@ namespace Author.OTP
             }
 
             NameValueCollection kvs = HttpUtility.ParseQueryString(uri.Query);
-            Secret auth = new Secret
+
+            Secret secret = new Secret
             {
-                Type = Type.Parse(uri.Host),
-                Algorithm = HashAlgorithmName.SHA1,
-                Digits = 6,
-                Period = 30
+                Type = Type.Parse(uri.Host)
             };
 
             Match match = LabelRegex.Match(HttpUtility.UrlDecode(uri.AbsolutePath));
             if (match.Success && match.Groups.Count == 3)
             {
-                auth.Issuer = match.Groups[1].Value;
-                auth.Name = match.Groups[2].Value;
+                secret.Issuer = match.Groups[1].Value;
+                secret.Name = match.Groups[2].Value;
             }
             else
             {
-                auth.Name = uri.AbsolutePath.Substring(1);
+                secret.Name = HttpUtility.UrlDecode(uri.AbsolutePath.Substring(1));
             }
 
-            string[] secrets = kvs.GetValues("secret");
-            if (secrets == null || secrets.Length == 0)
-            {
-                throw new ArgumentException("Invalid secret", nameof(uri));
-            }
+            string[] kvsSecrets = kvs.GetValues("secret");
+            secret.Data = kvsSecrets[0];
 
-            auth.Data = secrets[0];
-
-            string[] issuers = kvs.GetValues("issuer");
-            if (issuers != null && issuers.Length > 0)
+            string[] kvsIssuers = kvs.GetValues("issuer");
+            string kvsIssuer = kvsIssuers?[0];
+            if (!string.IsNullOrEmpty(kvsIssuer))
             {
-                string issuer = issuers[0];
-                if (auth.Issuer != null && issuer != auth.Issuer)
+                if (secret.Issuer != null && kvsIssuer != secret.Issuer)
                 {
                     throw new ArgumentException("Different issuers between label and parameter", nameof(uri));
                 }
 
-                auth.Issuer = issuer;
+                secret.Issuer = kvsIssuer;
             }
 
-            string[] algorithms = kvs.GetValues("algorithm");
-            if (algorithms != null && algorithms.Length > 0)
+            string[] kvsAlgorithms = kvs.GetValues("algorithm");
+            string kvsAlgorithm = kvsAlgorithms?[0];
+            if (!string.IsNullOrEmpty(kvsAlgorithm))
             {
-                switch (algorithms[0])
+                switch (kvsAlgorithm)
                 {
                     case "SHA1":
-                        auth.Algorithm = HashAlgorithmName.SHA1;
+                        secret.Algorithm = HashAlgorithmName.SHA1;
                         break;
 
                     case "SHA256":
-                        auth.Algorithm = HashAlgorithmName.SHA256;
+                        secret.Algorithm = HashAlgorithmName.SHA256;
                         break;
 
                     case "SHA512":
-                        auth.Algorithm = HashAlgorithmName.SHA512;
+                        secret.Algorithm = HashAlgorithmName.SHA512;
                         break;
 
                     default:
@@ -95,61 +309,69 @@ namespace Author.OTP
                 }
             }
 
-            string[] digits = kvs.GetValues("digits");
-            if (digits != null && digits.Length > 0)
+            string[] kvsDigitsArray = kvs.GetValues("digits");
+            string kvsDigits = kvsDigitsArray?[0];
+            if (!string.IsNullOrEmpty(kvsDigits))
             {
-                byte digit = byte.Parse(digits[0]);
-                if (digit < 4 || digit > 8)
-                {
-                    throw new ArgumentException("Invalid number of digits", nameof(uri));
-                }
-
-                auth.Digits = digit;
+                secret.Digits = byte.Parse(kvsDigits);
             }
 
-            string[] counters = kvs.GetValues("counter");
-            if (counters != null && counters.Length > 0)
+            string[] kvsCounters = kvs.GetValues("counter");
+            string kvsCounter = kvsCounters?[0];
+            if (!string.IsNullOrEmpty(kvsCounter))
             {
-                auth.Counter = long.Parse(counters[0]);
+                secret.Counter = long.Parse(kvsCounter);
             }
-            else if (auth.Type == Type.Hash)
+            else if (secret.Type == Type.Hash)
             {
                 throw new ArgumentException("Invalid counter", nameof(uri));
             }
 
-            string[] periods = kvs.GetValues("period");
-            if (periods != null && periods.Length > 0)
+            string[] kvsPeriods = kvs.GetValues("period");
+            string kvsPeriod = kvsPeriods?[0];
+            if (!string.IsNullOrEmpty(kvsPeriod))
             {
-                byte period = byte.Parse(periods[0]);
-                if (period < 5 || period > 60)
-                {
-                    throw new ArgumentException("Invalid period", nameof(uri));
-                }
-
-                auth.Period = period;
+                secret.Period = byte.Parse(kvsPeriod);
             }
 
-            string[] uuids = kvs.GetValues("uuid");
-            if (uuids != null && uuids.Length > 0)
+            string[] kvsUuids = kvs.GetValues("uuid");
+            string kvsUuid = kvsUuids?[0];
+            if (!string.IsNullOrEmpty(kvsUuid))
             {
-                auth.Identifier = Guid.Parse(uuids[0]);
-            }
-            else
-            {
-                auth.Identifier = Guid.NewGuid();
+                secret.Identifier = Guid.Parse(kvsUuid);
             }
 
-            return auth;
+            return secret;
         }
 
         public override string ToString()
         {
             NameValueCollection kvs = HttpUtility.ParseQueryString("");
-            kvs.Set("secret", Data);
-            kvs.Set("issuer", Issuer);
-            kvs.Set("algorithm", Algorithm.Name);
-            kvs.Set("digits", Digits.ToString());
-            kvs.Set("uuid", Identifier.ToString());
+
+            if (!string.IsNullOrEmpty(Data))
+            {
+                kvs.Set("secret", Data);
+            }
+
+            if (!string.IsNullOrEmpty(Issuer))
+            {
+                kvs.Set("issuer", Issuer);
+            }
+
+            if (!string.IsNullOrEmpty(Algorithm.Name))
+            {
+                kvs.Set("algorithm", Algorithm.Name);
+            }
+
+            if (Digits != 0)
+            {
+                kvs.Set("digits", Digits.ToString());
+            }
+
+            if (Identifier != Guid.Empty)
+            {
+                kvs.Set("uuid", Identifier.ToString());
+            }
 
             if (Counter != 0)
             {
