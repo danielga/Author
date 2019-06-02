@@ -11,42 +11,42 @@ namespace Author.UI
         {
             {OTP.Type.Hash, vm =>
             {
-                vm.Length = 6;
+                vm.Entry.Secret.Digits = 6;
                 vm.LengthPickerEnabled = true;
 
-                vm.Period = 30;
+                vm.Entry.Secret.Period = 30;
                 vm.PeriodSliderEnabled = false;
             }},
             {OTP.Type.Time, vm =>
             {
-                vm.Length = 6;
+                vm.Entry.Secret.Digits = 6;
                 vm.LengthPickerEnabled = true;
 
-                vm.Period = 30;
+                vm.Entry.Secret.Period = 30;
                 vm.PeriodSliderEnabled = true;
             }},
             {OTP.Type.Steam, vm =>
             {
-                vm.Length = 5;
+                vm.Entry.Secret.Digits = 5;
                 vm.LengthPickerEnabled = false;
 
-                vm.Period = 30;
+                vm.Entry.Secret.Period = 30;
                 vm.PeriodSliderEnabled = false;
             }},
             {OTP.Type.Blizzard, vm =>
             {
-                vm.Length = 8;
+                vm.Entry.Secret.Digits = 8;
                 vm.LengthPickerEnabled = false;
 
-                vm.Period = 30;
+                vm.Entry.Secret.Period = 30;
                 vm.PeriodSliderEnabled = false;
             }},
             {OTP.Type.Authy, vm =>
             {
-                vm.Length = 7;
+                vm.Entry.Secret.Digits = 7;
                 vm.LengthPickerEnabled = false;
 
-                vm.Period = 10;
+                vm.Entry.Secret.Period = 10;
                 vm.PeriodSliderEnabled = false;
             }}
         };

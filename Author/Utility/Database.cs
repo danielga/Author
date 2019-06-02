@@ -1,5 +1,4 @@
 ﻿using Author.OTP;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -20,7 +19,7 @@ namespace Author.Utility
             task.Wait();
             string identifiers = task.Result;
             if (identifiers == null)
-                return null;
+                return new HashSet<string>();
 
             return new HashSet<string>(identifiers.Split(IdentifiersSeparator));
         }

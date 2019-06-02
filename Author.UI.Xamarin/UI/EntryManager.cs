@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using Author.OTP;
 using Author.Utility;
-using Xamarin.Forms;
-using System.Threading.Tasks;
-using System.Collections.Specialized;
+using System;
 using System.Collections.Generic;
-using Author.OTP;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace Author.UI
 {
@@ -13,10 +13,9 @@ namespace Author.UI
     {
         public ObservableCollection<Entry> Entries { get; } = new ObservableCollection<Entry>();
 
-        readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
-
-        readonly HashSet<Entry> _visibleEntries = new HashSet<Entry>();
-        bool _shouldUpdate = false;
+        private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
+        private readonly HashSet<Entry> _visibleEntries = new HashSet<Entry>();
+        private bool _shouldUpdate = false;
 
         public EntryManager()
         {
@@ -28,7 +27,9 @@ namespace Author.UI
                 {
                     entries = new List<Entry>();
                     foreach (Secret secret in await Database.GetEntries())
+                    {
                         entries.Add(new Entry(secret));
+                    }
                 }
                 catch (Exception)
                 { }
@@ -39,7 +40,9 @@ namespace Author.UI
                     {
                         Entries.Clear();
                         foreach (Entry entry in entries)
+                        {
                             Entries.Add(entry);
+                        }
                     }
 
                     // TODO: Check if collection changes can happen before this is executed
@@ -48,7 +51,7 @@ namespace Author.UI
             });
         }
 
-        void OnEntriesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnEntriesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Task.Run(async () =>
             {
@@ -56,22 +59,30 @@ namespace Author.UI
                 {
                     case NotifyCollectionChangedAction.Add:
                         foreach (Entry entry in e.NewItems)
-                            await Database.AddEntry(entry.GetSecret());
+                        {
+                            await Database.AddEntry(entry.Secret);
+                        }
 
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
                         foreach (Entry entry in e.OldItems)
-                            await Database.RemoveEntry(entry.GetSecret());
+                        {
+                            await Database.RemoveEntry(entry.Secret);
+                        }
 
                         foreach (Entry entry in e.NewItems)
-                            await Database.AddEntry(entry.GetSecret());
+                        {
+                            await Database.AddEntry(entry.Secret);
+                        }
 
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Entry entry in e.OldItems)
-                            await Database.RemoveEntry(entry.GetSecret());
+                        {
+                            await Database.RemoveEntry(entry.Secret);
+                        }
 
                         break;
 
@@ -82,11 +93,13 @@ namespace Author.UI
             });
         }
 
-        bool UpdateEntries()
+        private bool UpdateEntries()
         {
             long timestamp = Time.GetCurrent();
             foreach (Entry entry in _visibleEntries)
+            {
                 entry.UpdateCode(timestamp);
+            }
 
             return _shouldUpdate;
         }
@@ -94,7 +107,9 @@ namespace Author.UI
         public void EnableUpdate()
         {
             if (_shouldUpdate)
+            {
                 return;
+            }
 
             _shouldUpdate = true;
             UpdateEntries();
@@ -109,7 +124,9 @@ namespace Author.UI
         public void OnEntryAppearing(Entry entry)
         {
             if (entry == null)
+            {
                 return;
+            }
 
             entry.UpdateCode(Time.GetCurrent(), true);
             _visibleEntries.Add(entry);
@@ -118,7 +135,9 @@ namespace Author.UI
         public void OnEntryDisappearing(Entry entry)
         {
             if (entry == null || (Device.RuntimePlatform == Device.UWP && !_shouldUpdate))
+            {
                 return;
+            }
 
             _visibleEntries.Remove(entry);
         }

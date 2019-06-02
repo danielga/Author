@@ -4,13 +4,4 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Author.UWP"
     RequestedTheme="Light">
-  <Application.Resources>
-    <ResourceDictionary>
-      <DataTemplate x:Key="CellTemplate">
-        <local:CustomCellControl
-          HorizontalContentAlignment="Stretch"
-          Height="{Binding Cell.RenderHeight, RelativeSource={RelativeSource Mode=Self}, Converter={StaticResource HeightConverter}}" />
-      </DataTemplate>
-    </ResourceDictionary>
-  </Application.Resources>
 </Application>

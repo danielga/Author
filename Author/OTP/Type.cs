@@ -5,24 +5,14 @@ namespace Author.OTP
 {
     public struct Type : IEquatable<Type>
     {
-        private enum ValueEnum
-        {
-            Hash = 0,
-            Time = 1,
-            Steam = 2,
-            Blizzard = 3,
-            Authy = 4,
-            Maximum = Authy
-        }
-
         public string Name { get; private set; }
-        private readonly ValueEnum Value;
+        public int Value { get; private set; }
 
-        public static readonly Type Hash = new Type("hotp", ValueEnum.Hash);
-        public static readonly Type Time = new Type("totp", ValueEnum.Time);
-        public static readonly Type Steam = new Type("steam", ValueEnum.Steam);
-        public static readonly Type Blizzard = new Type("blizzard", ValueEnum.Blizzard);
-        public static readonly Type Authy = new Type("authy", ValueEnum.Authy);
+        public static Type Hash { get; private set; } = new Type("hotp", 0);
+        public static Type Time { get; private set; } = new Type("totp", 1);
+        public static Type Steam { get; private set; } = new Type("steam", 2);
+        public static Type Blizzard { get; private set; } = new Type("blizzard", 3);
+        public static Type Authy { get; private set; } = new Type("authy", 4);
 
         private static readonly Dictionary<string, Type> FromName = new Dictionary<string, Type>
         {
@@ -33,7 +23,9 @@ namespace Author.OTP
             { Authy.Name, Authy }
         };
 
-        private Type(string name, ValueEnum value)
+        private static readonly Type[] FromValue = new Type[] { Hash, Time, Steam, Blizzard, Authy };
+
+        private Type(string name, int value)
         {
             Name = name;
             Value = value;
@@ -77,6 +69,16 @@ namespace Author.OTP
             }
 
             return value;
+        }
+
+        public static Type Parse(int input)
+        {
+            if (input < 0 || input > FromValue.Length)
+            {
+                throw new ArgumentException("Invalid type value", nameof(input));
+            }
+
+            return FromValue[input];
         }
 
         public override string ToString()

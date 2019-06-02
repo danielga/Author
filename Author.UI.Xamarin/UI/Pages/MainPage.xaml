@@ -61,7 +61,7 @@
   <ListView
     HorizontalOptions="FillAndExpand"
     CachingStrategy="RecycleElement"
-    ItemsSource="{Binding EntriesList}"
+    ItemsSource="{Binding EntriesManager.Entries}"
     SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
     <ListView.Behaviors>
       <behaviors:EventHandlerBehavior EventName="ItemAppearing">
@@ -100,11 +100,11 @@
             <Label
               Grid.Row="0"
               Grid.Column="0"
-              Text="{Binding Name}" />
+              Text="{Binding Secret.Name}" />
             <Label
               Grid.Row="0"
               Grid.Column="1"
-              Text="{Binding Code}" />
+              Text="{Binding Secret.Code}" />
             <ProgressBar
               Grid.Row="1"
               Grid.Column="0"

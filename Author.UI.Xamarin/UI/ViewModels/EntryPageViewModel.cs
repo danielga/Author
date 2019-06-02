@@ -1,194 +1,84 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Author.OTP;
-using System.Diagnostics;
-using System;
-using Author.Utility;
-using Xamarin.Forms;
+﻿using Author.OTP;
 using Author.UI.Messages;
+using Author.Utility;
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Xamarin.Forms;
 
 namespace Author.UI.ViewModels
 {
     public class EntryPageViewModel : INotifyPropertyChanged
     {
-        Entry _entry = null;
+        private bool _addingEntry = false;
+
+        private Entry _entry = null;
         public Entry Entry
         {
-            get { return _entry; }
+            get => _entry;
 
-            set
+            private set
             {
-                _entry = value;
+                if (value != _entry)
+                {
+                    if (_entry != null)
+                    {
+                        _entry.Secret.PropertyChanged -= OnTypeChanged;
+                    }
 
-                if (value != null)
-                {
-                    Title = "Edit OTP entry";
-                    Type = value.Type;
-                    Name = value.Name;
-                    Length = value.Digits;
-                    Period = value.Period;
-                    Secret = value.Secret;
-                }
-                else
-                {
-                    Title = "Add OTP entry";
-                    Type = OTP.Type.Time;
-                    Name = "";
-                    Secret = "";
-                    Length = 6;
-                    Period = 30;
+                    if (value != null)
+                    {
+                        value.Secret.PropertyChanged += OnTypeChanged;
+                    }
+
+                    _entry = value;
+                    OnPropertyChanged();
                 }
             }
         }
-
-        OTP.Type _type = OTP.Type.Time;
-        public OTP.Type Type
-        {
-            get { return _type; }
-
-            set
-            {
-                bool changed = _type != value;
-
-                _type = value;
-
-                if (changed)
-                {
-                    OnPropertyChanged();
-                    Factory.SetupEntryPage(value, this);
-                }
-            }
-        }
-
-        string _name = "";
-        public string Name
-        {
-            get { return _name; }
-
-            set
-            {
-                bool changed = _name != value;
-
-                _name = value;
-
-                if (changed)
-                    OnPropertyChanged();
-            }
-        }
-
-        public const int PasswordLengthDifference = 4;
-        int _lengthIndex = 6 - PasswordLengthDifference;
-        public int LengthIndex
-        {
-            get { return _lengthIndex; }
-
-            set
-            {
-                bool changed = _lengthIndex != value;
-
-                _lengthIndex = value;
-
-                if (changed)
-                    OnPropertyChanged();
-            }
-        }
-
-        public byte Length
-        {
-            get { return (byte)(LengthIndex + PasswordLengthDifference); }
-
-            set
-            {
-                Debug.Assert(value >= 4 && value <= 8, "OTP length is invalid");
-
-                bool changed = Length != value;
-
-                LengthIndex = value - PasswordLengthDifference;
-
-                if (changed)
-                    OnPropertyChanged();
-            }
-        }
-
-        double _period = 30;
-        public double Period
-        {
-            get { return _period; }
-
-            set
-            {
-                double newValue = Math.Round(value);
-
-                bool changed = _period != newValue;
-
-                _period = newValue;
-
-                if (changed)
-                    OnPropertyChanged();
-            }
-        }
-
-        string _secret = "";
-        public string Secret
-        {
-            get { return _secret; }
-
-            set
-            {
-                bool changed = _secret != value;
-
-                _secret = value;
-
-                if (changed)
-                    OnPropertyChanged();
-            }
-        }
-
-        string _title = "Add OTP entry";
+        
+        private string _title = "Add OTP entry";
         public string Title
         {
-            get { return _title; }
+            get => _title;
 
             set
             {
-                bool changed = _title != value;
-
-                _title = value;
-
-                if (changed)
+                if (value != _title)
+                {
+                    _title = value;
                     OnPropertyChanged();
+                }
             }
         }
 
-        bool _lengthPickerEnabled = true;
+        private bool _lengthPickerEnabled = true;
         public bool LengthPickerEnabled
         {
-            get { return _lengthPickerEnabled; }
+            get => _lengthPickerEnabled;
 
             set
             {
-                bool changed = _lengthPickerEnabled != value;
-
-                _lengthPickerEnabled = value;
-
-                if (changed)
+                if (value != _lengthPickerEnabled)
+                {
+                    _lengthPickerEnabled = value;
                     OnPropertyChanged();
+                }
             }
         }
 
-        bool _periodSliderEnabled = true;
+        private bool _periodSliderEnabled = true;
         public bool PeriodSliderEnabled
         {
-            get { return _periodSliderEnabled; }
+            get => _periodSliderEnabled;
 
             set
             {
-                bool changed = _periodSliderEnabled != value;
-
-                _periodSliderEnabled = value;
-
-                if (changed)
+                if (value != _periodSliderEnabled)
+                {
+                    _periodSliderEnabled = value;
                     OnPropertyChanged();
+                }
             }
         }
 
@@ -203,15 +93,15 @@ namespace Author.UI.ViewModels
             AcceptCommand = new Command(OnAcceptTapped);
         }
 
-        void OnDisappearing()
+        private void OnDisappearing()
         {
             Entry = null;
         }
 
-        void OnAcceptTapped()
+        private void OnAcceptTapped()
         {
-            if (string.IsNullOrWhiteSpace(Name) ||
-                string.IsNullOrWhiteSpace(Secret))
+            if (string.IsNullOrEmpty(Entry.Secret.Name) ||
+                string.IsNullOrEmpty(Entry.Secret.Data))
             {
                 Notification.Create("Detected invalid properties for the entry")
                     .SetDuration(TimeSpan.FromSeconds(3))
@@ -220,16 +110,18 @@ namespace Author.UI.ViewModels
                 return;
             }
 
-            if (Entry != null)
+            if (_addingEntry)
+            {
+                MessagingCenter.Send(new AddEntry { Entry = Entry }, "AddEntry");
+
+                Notification.Create("Added new entry")
+                    .SetDuration(TimeSpan.FromSeconds(3))
+                    .SetPosition(Notification.Position.Bottom)
+                    .Show();
+            }
+            else
             {
                 Entry entry = Entry;
-
-                entry.Type = Type;
-                entry.Name = Name;
-                entry.Digits = Length;
-                entry.Period = (byte)Period;
-                entry.Secret = Secret;
-                entry.UpdateData();
                 entry.UpdateCode(Time.GetCurrent(), true);
 
                 MessagingCenter.Send(new EditEntry { Entry = entry }, "EditEntry");
@@ -239,28 +131,31 @@ namespace Author.UI.ViewModels
                     .SetPosition(Notification.Position.Bottom)
                     .Show();
             }
-            else
-            {
-                MessagingCenter.Send(new AddEntry
-                {
-                    Entry = new Entry(new Secret
-                    {
-                        Type = Type,
-                        Name = Name,
-                        Data = Secret,
-                        Digits = Length,
-                        Period = (byte)Period
-                    })
-                }, "AddEntry");
+        }
 
-                Notification.Create("Added new entry")
-                    .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Notification.Position.Bottom)
-                    .Show();
+        public void AddEntry()
+        {
+            Title = "Add OTP entry";
+            Entry = new Entry();
+            _addingEntry = true;
+        }
+
+        public void EditEntry(Entry entry)
+        {
+            Title = "Edit OTP entry";
+            Entry = entry;
+            _addingEntry = false;
+        }
+
+        private void OnTypeChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Type")
+            {
+                Factory.SetupEntryPage(((Secret)sender).Type, this);
             }
         }
 
-        void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

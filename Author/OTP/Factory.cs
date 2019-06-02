@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace Author.OTP
 {
     public static class Factory
     {
-        private static readonly Dictionary<Type, Func<string, IBaseGenerator>> Constructors =
-            new Dictionary<Type, Func<string, IBaseGenerator>>
+        private static readonly Dictionary<Type, Func<string, HashAlgorithmName, IBaseGenerator>> Constructors =
+            new Dictionary<Type, Func<string, HashAlgorithmName, IBaseGenerator>>
         {
-            {Type.Hash, secret => new HashBased(secret, HashBased.DefaultAlgorithm)},
-            {Type.Time, secret => new TimeBased(secret, HashBased.DefaultAlgorithm)},
-            {Type.Steam, secret => new Steam(secret)},
-            {Type.Blizzard, secret => new BlizzardApp(secret)},
-            {Type.Authy, secret => new Authy(secret)}
+            {Type.Hash, (secret, algo) => new HashBased(secret, algo)},
+            {Type.Time, (secret, algo) => new TimeBased(secret, algo)},
+            {Type.Steam, (secret, _) => new Steam(secret)},
+            {Type.Blizzard, (secret, _) => new BlizzardApp(secret)},
+            {Type.Authy, (secret, _) => new Authy(secret)}
         };
 
-        public static IBaseGenerator CreateGenerator(Type type, string secret)
+        public static IBaseGenerator CreateGenerator(Type type, string secret, HashAlgorithmName algo)
         {
             return Constructors.TryGetValue(type, out var constructor) ?
-                constructor(secret) :
+                constructor(secret, algo) :
                 null;
         }
     }

@@ -6,7 +6,7 @@
     <SharedGUID>36f58bd1-9ea1-4d40-9cda-9893f07ab65b</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Author.UI.Xamarin</Import_RootNamespace>
+    <Import_RootNamespace>Author</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)UI\EntryManager.cs" />
@@ -33,9 +33,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\DigitsToIndexConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\EntryPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\MainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\SettingsPageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\TypeToIndexConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\AboutPage.xaml">
