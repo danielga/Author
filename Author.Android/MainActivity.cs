@@ -7,13 +7,8 @@ namespace Author.Android
 {
     [Activity(Label = "@string/application_name",
         Icon = "@drawable/icon",
-        Theme = "@style/Theme.Splash",
-        MainLauncher = true,
+        Theme = "@style/Theme.Main",
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    [IntentFilter(new[] { Intent.ActionView },
-        DataScheme = "otpauth",
-        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-        Icon = "@drawable/icon")]
     public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
@@ -21,7 +16,6 @@ namespace Author.Android
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
 
-            SetTheme(Resource.Style.Theme_Main);
             base.OnCreate(bundle);
 
             Xamarin.Forms.Forms.Init(this, bundle);
