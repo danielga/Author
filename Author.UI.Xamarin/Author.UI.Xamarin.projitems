@@ -6,7 +6,7 @@
     <SharedGUID>36f58bd1-9ea1-4d40-9cda-9893f07ab65b</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Author.UI.Xamarin</Import_RootNamespace>
+    <Import_RootNamespace>Author</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)UI\EntryManager.cs" />
