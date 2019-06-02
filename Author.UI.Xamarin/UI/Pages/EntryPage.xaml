@@ -7,6 +7,12 @@
   x:Class="Author.UI.Pages.EntryPage"
   Icon="Icon.png"
   Title="{Binding Title}">
+  <ContentPage.Resources>
+    <ResourceDictionary>
+      <vm:TypeToIndexConverter x:Key="TypeToIndexConverter" />
+      <vm:DigitsToIndexConverter x:Key="DigitsToIndexConverter" />
+    </ResourceDictionary>
+  </ContentPage.Resources>
   <ContentPage.BindingContext>
     <vm:EntryPageViewModel />
   </ContentPage.BindingContext>

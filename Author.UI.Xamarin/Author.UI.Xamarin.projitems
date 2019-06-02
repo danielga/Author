@@ -33,9 +33,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\DigitsToIndexConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\EntryPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\MainPageViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\SettingsPageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\TypeToIndexConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\AboutPage.xaml">
