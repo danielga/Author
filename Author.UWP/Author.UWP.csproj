@@ -117,6 +117,7 @@
   <ItemGroup>
     <Content Include="Assets\ic_add.png" />
     <Content Include="Assets\ic_done.png" />
+    <Content Include="Assets\ic_import_export.png" />
     <Content Include="Assets\ic_info.png" />
     <Content Include="Assets\ic_save.png" />
     <Content Include="Assets\ic_settings.png" />
