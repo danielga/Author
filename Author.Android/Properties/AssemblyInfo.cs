@@ -36,6 +36,7 @@ using Xamarin.Forms.Xaml;
 [assembly: AssemblyFileVersion("0.1.0.0")]
 
 // Add some common permissions, these can be removed if not needed
+[assembly: UsesPermission(Android.Manifest.Permission.ReadExternalStorage)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
