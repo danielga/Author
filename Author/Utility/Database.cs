@@ -21,7 +21,7 @@ namespace Author.Utility
             if (identifiers == null)
                 return new HashSet<string>();
 
-            return new HashSet<string>(identifiers.Split(IdentifiersSeparator));
+            return new HashSet<string>(identifiers.Split(IdentifiersSeparator[0]));
         }
 
         private static async Task SaveIdentifiers(HashSet<string> identifiers)
