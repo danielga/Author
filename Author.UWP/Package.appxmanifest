@@ -30,6 +30,41 @@
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="otpauth" />
         </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="otp">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.otp</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:DisplayName>Author OTP backup</uap:DisplayName>
+            <uap:Logo>Icon.png</uap:Logo>
+            <uap:InfoTip>Author OTP backup</uap:InfoTip>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.shareTarget">
+          <uap:ShareTarget Description="Author OTP sharing">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.otp</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:DataFormat>Text</uap:DataFormat>
+            <uap:DataFormat>URI</uap:DataFormat>
+            <uap:DataFormat>StorageItems</uap:DataFormat>
+            <uap:DataFormat>RTF</uap:DataFormat>
+          </uap:ShareTarget>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileOpenPicker">
+          <uap:FileOpenPicker>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.otp</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileOpenPicker>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileSavePicker">
+          <uap:FileSavePicker>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.otp</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileSavePicker>
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

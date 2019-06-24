@@ -77,5 +77,44 @@
 		<string>location</string>
 		<string>remote-notification</string>
 	</array>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Author OTP backup</string>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Icon-Small@2x</string>
+			</array>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>xyz.metaman.author.ios.otp</string>
+			</array>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeDescription</key>
+			<string>Author OTP backup</string>
+			<key>UTTypeSize320IconFile</key>
+			<string>Media.xcassets/AppIcon.appiconset/Icon-Small@3x</string>
+			<key>UTTypeIdentifier</key>
+			<string>xyz.metaman.author.ios.otp</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>otp</string>
+				</array>
+			</dict>
+			<key>UTTypeSize64IconFile</key>
+			<string>Media.xcassets/AppIcon.appiconset/Icon-Small@2x</string>
+		</dict>
+	</array>
 </dict>
 </plist>

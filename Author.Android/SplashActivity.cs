@@ -3,6 +3,8 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Content;
+using Android.Net;
+using System.IO;
 
 namespace Author.Android
 {
@@ -13,9 +15,24 @@ namespace Author.Android
         NoHistory = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     [IntentFilter(new[] { Intent.ActionView },
-        DataScheme = "otpauth",
         Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-        Icon = "@drawable/icon")]
+        Label = "@string/application_name",
+        Icon = "@drawable/icon",
+        DataScheme = "otpauth")]
+    [IntentFilter(new[] { Intent.ActionView },
+        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
+        Label = "@string/application_name",
+        Icon = "@drawable/icon",
+        DataSchemes = new[] { "file", "content" },
+        DataMimeType = "*/*",
+        DataPathPattern = ".*\\.otp")]
+    [IntentFilter(new[] { Intent.ActionSend },
+        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
+        Label = "@string/application_name",
+        Icon = "@drawable/icon",
+        DataSchemes = new[] { "file", "content" },
+        DataMimeType = "*/*",
+        DataPathPattern = ".*\\.otp")]
     public class SplashActivity : AppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
@@ -26,7 +43,28 @@ namespace Author.Android
 
             if (Intent?.Data != null)
             {
-                intent.SetData(Intent.Data);
+                try
+                {
+                    string path = Path.Combine(CacheDir.AbsolutePath, "import.otp");
+                    Uri data = Intent.Data;
+                    if (data.Scheme == "content")
+                    {
+                        using (Stream stream = ContentResolver.OpenInputStream(data))
+                        using (Stream writer = new FileStream(path, FileMode.Create))
+                            stream.CopyTo(writer);
+
+                        data = Uri.Parse("file://" + path);
+                    }
+                    else if(data.Scheme == "file")
+                    {
+                        File.Copy(data.Path, path, true);
+                        data = Uri.Parse("file://" + path);
+                    }
+
+                    intent.SetData(data);
+                }
+                catch (System.Exception)
+                { }
             }
 
             StartActivity(intent);
