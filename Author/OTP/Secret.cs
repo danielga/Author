@@ -9,7 +9,7 @@ using System.Web;
 
 namespace Author.OTP
 {
-    public class Secret : INotifyPropertyChanged
+    public class Secret : INotifyPropertyChanged, IEquatable<Secret>
     {
         private bool _dirtySecret = true;
         private IBaseGenerator _generator = null;
@@ -391,6 +391,24 @@ namespace Author.OTP
                 Query = HttpUtility.UrlDecode(kvs.ToString())
             };
             return builder.Uri.AbsoluteUri;
+        }
+
+        public bool Equals(Secret other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Identifier == other.Identifier &&
+                   Algorithm == other.Algorithm &&
+                   Counter == other.Counter &&
+                   Data == other.Data &&
+                   Digits == other.Digits &&
+                   Issuer == other.Issuer &&
+                   Name == other.Name &&
+                   Period == other.Period &&
+                   Type == other.Type;
         }
     }
 }
