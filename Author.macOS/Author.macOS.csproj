@@ -85,9 +85,6 @@
       <HintPath>..\packages\Xamarin.Forms.4.2.0.709249\lib\Xamarin.Mac\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Mac" />
-    <Reference Include="SshNet.Security.Cryptography">
-      <HintPath>..\packages\SshNet.Security.Cryptography.1.3.0\lib\netstandard2.0\SshNet.Security.Cryptography.dll</HintPath>
-    </Reference>
     <Reference Include="Acr.UserDialogs">
       <HintPath>..\packages\Acr.UserDialogs.7.0.4\lib\netstandard2.0\Acr.UserDialogs.dll</HintPath>
     </Reference>
