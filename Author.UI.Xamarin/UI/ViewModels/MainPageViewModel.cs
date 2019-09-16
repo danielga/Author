@@ -2,8 +2,11 @@
 using Author.UI.Messages;
 using Author.UI.Pages;
 using Author.Utility;
+using Plugin.FilePicker;
+using Plugin.FilePicker.Abstractions;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
@@ -31,6 +34,8 @@ namespace Author.UI.ViewModels
         public Command AppearingCommand { get; private set; }
         public Command DisappearingCommand { get; private set; }
         public Command AddCommand { get; private set; }
+        public Command ImportCommand { get; private set; }
+        public Command ExportCommand { get; private set; }
         public Command SettingsCommand { get; private set; }
         public Command AboutCommand { get; private set; }
         public Command ItemAppearingCommand { get; private set; }
@@ -63,6 +68,8 @@ namespace Author.UI.ViewModels
             AppearingCommand = new Command(OnAppearing);
             DisappearingCommand = new Command(OnDisappearing);
             AddCommand = new Command(OnAddTapped);
+            ImportCommand = new Command(OnImportTapped);
+            ExportCommand = new Command(OnExportTapped);
             SettingsCommand = new Command(OnSettingsTapped);
             AboutCommand = new Command(OnAboutTapped);
             ItemAppearingCommand = new Command(OnItemAppearing);
@@ -92,6 +99,7 @@ namespace Author.UI.ViewModels
                     Data = new string(Enumerable.Repeat(Chars, 32).Select(s => s[random.Next(s.Length)]).ToArray())
                 });
                 EntriesManager.Entries.Add(entry);
+                Database.AddEntry(entry.Secret).Wait();
                 entry.UpdateCode(timestamp);
             }
 #endif
@@ -119,9 +127,9 @@ namespace Author.UI.ViewModels
             navPage?.PushAsync(page);
         }
 
-        public void SetAddEntryPageAsMainPage()
+        public void SetAddEntryPageAsMainPage(Entry entry = null)
         {
-            _entryPageVM.AddEntry();
+            _entryPageVM.AddEntry(entry);
             if (Device.RuntimePlatform == Device.macOS ||
                 Device.RuntimePlatform == Device.UWP)
             {
@@ -137,6 +145,67 @@ namespace Author.UI.ViewModels
         {
             _entryPageVM.AddEntry();
             SetPage(_entryPage);
+        }
+
+        private async void OnImportTapped()
+        {
+            try
+            {
+                FileData fileData = await CrossFilePicker.Current.PickFile();
+                if (fileData == null)
+                {
+                    return;
+                }
+
+                using (Stream stream = fileData.GetStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        ImportStreamAsync(reader);
+                    }
+                }
+            }
+            catch (Exception)
+            { }
+        }
+
+        public async void ImportStreamAsync(StreamReader reader)
+        {
+            while (!reader.EndOfStream)
+            {
+                try
+                {
+                    Secret secret = Secret.Parse(await reader.ReadLineAsync());
+                    EntriesManager.Entries.Add(new Entry(secret));
+                    await Database.AddEntry(secret);
+                }
+                catch (Exception)
+                { }
+            }
+        }
+
+        private async void OnExportTapped()
+        {
+            try
+            {
+                string path = Path.Combine(Xamarin.Essentials.FileSystem.CacheDirectory, "export.otp");
+
+                using (StreamWriter fileWriter = File.CreateText(path))
+                {
+                    foreach (Entry entry in EntriesManager.Entries)
+                    {
+                        await fileWriter.WriteLineAsync(entry.Secret.ToString());
+                    }
+                }
+
+                await Xamarin.Essentials.Share.RequestAsync(new Xamarin.Essentials.ShareFileRequest
+                {
+                    Title = "Author OTP export",
+                    File = new Xamarin.Essentials.ShareFile(path)
+                });
+            }
+            catch (Exception)
+            { }
         }
 
         private void OnSettingsTapped()

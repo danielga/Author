@@ -34,6 +34,30 @@
       </ToolbarItem.Icon>
     </ToolbarItem>
     <ToolbarItem
+      Text="Import..."
+      Order="Secondary"
+      Command="{Binding ImportCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_import_export" />
+          <On Platform="macOS" Value="ic_import_export.png" />
+          <On Platform="UWP" Value="Assets/ic_import_export.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
+    <ToolbarItem
+      Text="Export..."
+      Order="Secondary"
+      Command="{Binding ExportCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_import_export" />
+          <On Platform="macOS" Value="ic_import_export.png" />
+          <On Platform="UWP" Value="Assets/ic_import_export.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
+    <ToolbarItem
       Text="Settings"
       Order="Secondary"
       Command="{Binding SettingsCommand}">

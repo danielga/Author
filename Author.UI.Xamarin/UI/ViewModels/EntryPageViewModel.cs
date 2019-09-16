@@ -133,10 +133,10 @@ namespace Author.UI.ViewModels
             }
         }
 
-        public void AddEntry()
+        public void AddEntry(Entry entry = null)
         {
             Title = "Add OTP entry";
-            Entry = new Entry();
+            Entry = entry ?? new Entry();
             _addingEntry = true;
         }
 
