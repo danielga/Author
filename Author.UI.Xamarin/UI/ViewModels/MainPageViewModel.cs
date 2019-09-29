@@ -5,15 +5,12 @@ using Author.Utility;
 using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
 using System;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 
 namespace Author.UI.ViewModels
 {
-    public class MainPageViewModel : INotifyPropertyChanged
+    public class MainPageViewModel
     {
         private static readonly EntryPage _entryPage = new EntryPage();
         private static readonly EntryPageViewModel _entryPageVM;
@@ -24,13 +21,6 @@ namespace Author.UI.ViewModels
 
         public EntryManager EntriesManager { get; } = new EntryManager();
 
-        public object SelectedItem
-        {
-            get => null;
-
-            set => OnPropertyChanged();
-        }
-
         public Command AppearingCommand { get; }
         public Command DisappearingCommand { get; }
         public Command AddCommand { get; }
@@ -40,11 +30,7 @@ namespace Author.UI.ViewModels
         public Command AboutCommand { get; }
         public Command ItemAppearingCommand { get; }
         public Command ItemDisappearingCommand { get; }
-        public Command ItemEditCommand { get; }
-        public Command ItemDeleteCommand { get; }
         public Command ItemTappedCommand { get; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         static MainPageViewModel()
         {
@@ -74,8 +60,6 @@ namespace Author.UI.ViewModels
             AboutCommand = new Command(OnAboutTapped);
             ItemAppearingCommand = new Command(OnItemAppearing);
             ItemDisappearingCommand = new Command(OnItemDisappearing);
-            ItemEditCommand = new Command(OnItemEdit);
-            ItemDeleteCommand = new Command(OnItemDelete);
             ItemTappedCommand = new Command(OnItemTapped);
         }
 
@@ -101,7 +85,7 @@ namespace Author.UI.ViewModels
             navPage?.PushAsync(page);
         }
 
-        public void SetAddEntryPageAsMainPage(Entry entry = null)
+        public void SetAddEntryPageAsMainPage(MainPageEntryViewModel entry = null)
         {
             _entryPageVM.AddEntry(entry);
             if (Device.RuntimePlatform == Device.macOS ||
@@ -150,7 +134,7 @@ namespace Author.UI.ViewModels
                 try
                 {
                     Secret secret = Secret.Parse(await reader.ReadLineAsync());
-                    EntriesManager.Entries.Add(new Entry(secret));
+                    EntriesManager.Entries.Add(new MainPageEntryViewModel(secret));
                 }
                 catch (Exception)
                 { }
@@ -165,7 +149,7 @@ namespace Author.UI.ViewModels
 
                 using (StreamWriter fileWriter = File.CreateText(path))
                 {
-                    foreach (Entry entry in EntriesManager.Entries)
+                    foreach (MainPageEntryViewModel entry in EntriesManager.Entries)
                     {
                         await fileWriter.WriteLineAsync(entry.Secret.ToString());
                     }
@@ -195,25 +179,25 @@ namespace Author.UI.ViewModels
         private void OnItemAppearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            EntriesManager.OnEntryAppearing((Entry)e.Item);
+            EntriesManager.OnEntryAppearing((MainPageEntryViewModel)e.Item);
         }
 
         // This event is triggered when we navigate to another page
         private void OnItemDisappearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            EntriesManager.OnEntryDisappearing((Entry)e.Item);
+            EntriesManager.OnEntryDisappearing((MainPageEntryViewModel)e.Item);
         }
 
         private void OnItemEdit(object context)
         {
-            _entryPageVM.EditEntry((Entry)context);
+            _entryPageVM.EditEntry((MainPageEntryViewModel)context);
             SetPage(_entryPage);
         }
 
         private void OnItemDelete(object context)
         {
-            EntriesManager.Entries.Remove((Entry)context);
+            EntriesManager.Entries.Remove((MainPageEntryViewModel)context);
 
             try
             {
@@ -229,7 +213,7 @@ namespace Author.UI.ViewModels
         private async void OnItemTapped(object context)
         {
             ItemTappedEventArgs args = (ItemTappedEventArgs)context;
-            Entry entry = (Entry)args.Item;
+            MainPageEntryViewModel entry = (MainPageEntryViewModel)args.Item;
             try
             {
                 await Clipboard.SetTextAsync(entry.Secret.Code);
@@ -240,11 +224,6 @@ namespace Author.UI.ViewModels
             }
             catch (NotImplementedException)
             { }
-        }
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

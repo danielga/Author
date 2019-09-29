@@ -4,6 +4,6 @@ namespace Author.UI.Messages
 {
     public class RequestEditEntry
     {
-        public Entry Entry;
+        public MainPageEntryViewModel Entry;
     }
 }

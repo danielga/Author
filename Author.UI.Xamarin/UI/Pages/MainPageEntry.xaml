@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ViewCell xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:Author.UI.Pages"
+             mc:Ignorable="d"
+             x:Class="Author.UI.Pages.MainPageEntry">
+  <ViewCell.ContextActions>
+    <MenuItem
+      Command="{Binding EditCommand}"
+      Text="Edit" />
+    <MenuItem
+      Command="{Binding DeleteCommand}"
+      Text="Delete"
+      IsDestructive="True" />
+  </ViewCell.ContextActions>
+  <Grid Padding="5">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
+    </Grid.ColumnDefinitions>
+    <Label
+      Grid.Row="0"
+      Grid.Column="0"
+      Text="{Binding Secret.Name}" />
+    <Label
+      Grid.Row="0"
+      Grid.Column="1"
+      Text="{Binding Secret.Code}" />
+    <ProgressBar
+      x:Name="ProgressBar"
+      Grid.Row="1"
+      Grid.Column="0"
+      Grid.ColumnSpan="2"
+      Progress="{Binding Progress, Mode=TwoWay}"
+      pages:AttachedProperties.AnimatedProgressAnimationTime="{Binding AnimatedProgressAnimationTime}"
+      pages:AttachedProperties.AnimatedProgress="{Binding AnimatedProgress}" />
+  </Grid>
+</ViewCell>

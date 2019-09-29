@@ -1,12 +1,13 @@
 ﻿using Author.OTP;
 using Author.UI.Messages;
+using Author.Utility;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 
 namespace Author.UI
 {
-    public class Entry : INotifyPropertyChanged
+    public class MainPageEntryViewModel : INotifyPropertyChanged
     {
         private Secret _secret = null;
         public Secret Secret
@@ -53,12 +54,27 @@ namespace Author.UI
             }
         }
 
+        private int _animatedProgressAnimationTime = 0;
+        public int AnimatedProgressAnimationTime
+        {
+            get => _animatedProgressAnimationTime;
+
+            set
+            {
+                if (value != _animatedProgressAnimationTime)
+                {
+                    _animatedProgressAnimationTime = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Command EditCommand { get; private set; }
-        public Command DeleteCommand { get; private set; }
+        public Command EditCommand { get; }
+        public Command DeleteCommand { get; }
 
-        public Entry(Secret secret)
+        public MainPageEntryViewModel(Secret secret)
         {
             Secret = secret;
 
@@ -68,7 +84,7 @@ namespace Author.UI
                 MessagingCenter.Send(new DeleteEntry { Entry = this }, "DeleteEntry"));
         }
 
-        public Entry() : this(new Secret()) { }
+        public MainPageEntryViewModel() : this(new Secret()) { }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -77,23 +93,18 @@ namespace Author.UI
 
         public void UpdateCode(long timestamp, bool force = false)
         {
-            if (Secret == null)
+            bool? shouldUpdate = Secret?.UpdateCode(timestamp, force);
+            if (shouldUpdate.HasValue && shouldUpdate.Value)
             {
-                return;
+                byte period = Secret.Period;
+                int progress = (int)(timestamp % period);
+
+                AnimatedProgressAnimationTime = 0;
+                AnimatedProgress = progress / (double)period;
+
+                AnimatedProgressAnimationTime = (period - progress) * 1000;
+                AnimatedProgress = 1;
             }
-
-            byte period = Secret.Period;
-            int progress = (int)(timestamp % period);
-
-            // We want the progress bar to change immediately
-            if (force)
-            {
-                Progress = progress / (double)period;
-            }
-
-            AnimatedProgress = (progress + 1) / (double)period;
-
-            Secret.UpdateCode(timestamp, force);
         }
     }
 }

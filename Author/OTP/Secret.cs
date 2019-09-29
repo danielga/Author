@@ -224,13 +224,16 @@ namespace Author.OTP
             return _generator.GetCode(timestamp, Digits, Period);
         }
 
-        public virtual void UpdateCode(long timestamp, bool force = false)
+        public bool UpdateCode(long timestamp, bool force = false)
         {
-            if (force || timestamp >= _nextUpdate)
+            if (!force && timestamp < _nextUpdate)
             {
-                _nextUpdate = timestamp + Period - timestamp % Period;
-                Code = GetCode(timestamp);
+                return false;
             }
+
+            _nextUpdate = timestamp + Period - timestamp % Period;
+            Code = GetCode(timestamp);
+            return true;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

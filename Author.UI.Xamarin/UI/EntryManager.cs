@@ -12,10 +12,10 @@ namespace Author.UI
 {
     public class EntryManager
     {
-        public ObservableCollection<Entry> Entries { get; } = new ObservableCollection<Entry>();
+        public ObservableCollection<MainPageEntryViewModel> Entries { get; } = new ObservableCollection<MainPageEntryViewModel>();
 
         private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
-        private readonly HashSet<Entry> _visibleEntries = new HashSet<Entry>();
+        private readonly HashSet<MainPageEntryViewModel> _visibleEntries = new HashSet<MainPageEntryViewModel>();
         private readonly Database _database = new Database();
         private bool _shouldUpdate = false;
 
@@ -28,7 +28,7 @@ namespace Author.UI
                     await _database.Initialize();
                     foreach (Secret secret in await _database.GetEntries())
                     {
-                        Entries.Add(new Entry(secret));
+                        Entries.Add(new MainPageEntryViewModel(secret));
                     }
 
                     Entries.CollectionChanged += OnEntriesChanged;
@@ -43,7 +43,7 @@ namespace Author.UI
                     Random random = new Random();
                     for (int i = 0; i < 5; ++i)
                     {
-                        Entry entry = new Entry(new Secret
+                        MainPageEntryViewModel entry = new MainPageEntryViewModel(new Secret
                         {
                             Name = "Hello world " + i,
                             Digits = (byte) (4 + i),
@@ -69,7 +69,7 @@ namespace Author.UI
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        foreach (Entry entry in e.NewItems)
+                        foreach (MainPageEntryViewModel entry in e.NewItems)
                         {
                             await _database.AddEntry(entry.Secret);
                         }
@@ -77,7 +77,7 @@ namespace Author.UI
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
-                        foreach (Entry entry in e.OldItems)
+                        foreach (MainPageEntryViewModel entry in e.OldItems)
                         {
                             await _database.RemoveEntry(entry.Secret);
                         }
@@ -85,12 +85,12 @@ namespace Author.UI
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
-                        foreach (Entry entry in e.OldItems)
+                        foreach (MainPageEntryViewModel entry in e.OldItems)
                         {
                             await _database.RemoveEntry(entry.Secret);
                         }
 
-                        foreach (Entry entry in e.NewItems)
+                        foreach (MainPageEntryViewModel entry in e.NewItems)
                         {
                             await _database.AddEntry(entry.Secret);
                         }
@@ -113,7 +113,7 @@ namespace Author.UI
         private bool UpdateEntries()
         {
             long timestamp = Time.GetCurrent();
-            foreach (Entry entry in _visibleEntries)
+            foreach (MainPageEntryViewModel entry in _visibleEntries)
             {
                 entry.UpdateCode(timestamp);
             }
@@ -138,7 +138,7 @@ namespace Author.UI
             _shouldUpdate = false;
         }
 
-        public void OnEntryAppearing(Entry entry)
+        public void OnEntryAppearing(MainPageEntryViewModel entry)
         {
             if (entry == null)
             {
@@ -149,7 +149,7 @@ namespace Author.UI
             _visibleEntries.Add(entry);
         }
 
-        public void OnEntryDisappearing(Entry entry)
+        public void OnEntryDisappearing(MainPageEntryViewModel entry)
         {
             if (entry == null || (Device.RuntimePlatform == Device.UWP && !_shouldUpdate))
             {

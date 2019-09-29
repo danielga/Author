@@ -41,7 +41,7 @@ namespace Author.UI.Pages
             try
             {
                 Secret secret = Secret.Parse(uri.AbsoluteUri);
-                viewModel.SetAddEntryPageAsMainPage(new Entry(secret));
+                viewModel.SetAddEntryPageAsMainPage(new MainPageEntryViewModel(secret));
             }
             catch (Exception)
             { }
