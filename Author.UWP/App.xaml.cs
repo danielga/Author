@@ -152,8 +152,6 @@ namespace Author.UWP
             base.OnFileOpenPickerActivated(e);
 
             CreateMainPage(e);
-
-
         }
 
         protected override void OnFileSavePickerActivated(FileSavePickerActivatedEventArgs e)
@@ -161,8 +159,6 @@ namespace Author.UWP
             base.OnFileSavePickerActivated(e);
 
             CreateMainPage(e);
-
-
         }
     }
 }

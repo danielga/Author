@@ -16,7 +16,7 @@ namespace Author.UI.ViewModels
     public class MainPageViewModel : INotifyPropertyChanged
     {
         private static readonly EntryPage _entryPage = new EntryPage();
-        private static readonly EntryPageViewModel _entryPageVM = null;
+        private static readonly EntryPageViewModel _entryPageVM;
         private static readonly SettingsPage _settingsPage = new SettingsPage();
         private static readonly AboutPage _aboutPage = new AboutPage();
 
@@ -31,18 +31,18 @@ namespace Author.UI.ViewModels
             set => OnPropertyChanged();
         }
 
-        public Command AppearingCommand { get; private set; }
-        public Command DisappearingCommand { get; private set; }
-        public Command AddCommand { get; private set; }
-        public Command ImportCommand { get; private set; }
-        public Command ExportCommand { get; private set; }
-        public Command SettingsCommand { get; private set; }
-        public Command AboutCommand { get; private set; }
-        public Command ItemAppearingCommand { get; private set; }
-        public Command ItemDisappearingCommand { get; private set; }
-        public Command ItemEditCommand { get; private set; }
-        public Command ItemDeleteCommand { get; private set; }
-        public Command ItemTappedCommand { get; private set; }
+        public Command AppearingCommand { get; }
+        public Command DisappearingCommand { get; }
+        public Command AddCommand { get; }
+        public Command ImportCommand { get; }
+        public Command ExportCommand { get; }
+        public Command SettingsCommand { get; }
+        public Command AboutCommand { get; }
+        public Command ItemAppearingCommand { get; }
+        public Command ItemDisappearingCommand { get; }
+        public Command ItemEditCommand { get; }
+        public Command ItemDeleteCommand { get; }
+        public Command ItemTappedCommand { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
