@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -15,39 +16,49 @@ namespace Author.UI
 
         private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
         private readonly HashSet<Entry> _visibleEntries = new HashSet<Entry>();
+        private readonly Database _database = new Database();
         private bool _shouldUpdate = false;
 
         public EntryManager()
         {
             Task.Run(async () =>
             {
-                List<Entry> entries = null;
-
                 try
                 {
-                    entries = new List<Entry>();
-                    foreach (Secret secret in await Database.GetEntries())
+                    await _database.Initialize();
+                    foreach (Secret secret in await _database.GetEntries())
                     {
-                        entries.Add(new Entry(secret));
-                    }
-                }
-                catch (Exception)
-                { }
-
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (entries != null && entries.Count != 0)
-                    {
-                        Entries.Clear();
-                        foreach (Entry entry in entries)
-                        {
-                            Entries.Add(entry);
-                        }
+                        Entries.Add(new Entry(secret));
                     }
 
-                    // TODO: Check if collection changes can happen before this is executed
                     Entries.CollectionChanged += OnEntriesChanged;
-                });
+
+#if DEBUG
+                    // Xamarin.Forms Previewer data
+                    if (Entries.Count != 0)
+                    {
+                        return;
+                    }
+
+                    Random random = new Random();
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        Entry entry = new Entry(new Secret
+                        {
+                            Name = "Hello world " + i,
+                            Digits = (byte) (4 + i),
+                            Period = (byte) (5 + i),
+                            Data = new string(Enumerable.Repeat(Base32.ValidCharacters, 32).Select(s => s[random.Next(s.Length)])
+                                .ToArray())
+                        });
+                        Entries.Add(entry);
+                    }
+#endif
+                }
+                catch
+                {
+                    // ignored
+                }
             });
         }
 
@@ -60,20 +71,7 @@ namespace Author.UI
                     case NotifyCollectionChangedAction.Add:
                         foreach (Entry entry in e.NewItems)
                         {
-                            await Database.AddEntry(entry.Secret);
-                        }
-
-                        break;
-
-                    case NotifyCollectionChangedAction.Replace:
-                        foreach (Entry entry in e.OldItems)
-                        {
-                            await Database.RemoveEntry(entry.Secret);
-                        }
-
-                        foreach (Entry entry in e.NewItems)
-                        {
-                            await Database.AddEntry(entry.Secret);
+                            await _database.AddEntry(entry.Secret);
                         }
 
                         break;
@@ -81,14 +79,33 @@ namespace Author.UI
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Entry entry in e.OldItems)
                         {
-                            await Database.RemoveEntry(entry.Secret);
+                            await _database.RemoveEntry(entry.Secret);
                         }
 
                         break;
 
-                    case NotifyCollectionChangedAction.Reset:
-                        await Database.RemoveEntries();
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (Entry entry in e.OldItems)
+                        {
+                            await _database.RemoveEntry(entry.Secret);
+                        }
+
+                        foreach (Entry entry in e.NewItems)
+                        {
+                            await _database.AddEntry(entry.Secret);
+                        }
+
                         break;
+
+                    case NotifyCollectionChangedAction.Move:
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        await _database.RemoveEntries();
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             });
         }

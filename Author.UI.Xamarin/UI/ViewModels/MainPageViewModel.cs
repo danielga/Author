@@ -77,32 +77,6 @@ namespace Author.UI.ViewModels
             ItemEditCommand = new Command(OnItemEdit);
             ItemDeleteCommand = new Command(OnItemDelete);
             ItemTappedCommand = new Command(OnItemTapped);
-
-#if DEBUG
-            // Xamarin.Forms Previewer data
-            if (EntriesManager.Entries.Count != 0)
-            {
-                return;
-            }
-
-            const string Chars = Base32.ValidCharacters;
-
-            Random random = new Random();
-            long timestamp = Time.GetCurrent();
-            for (int i = 0; i < 5; ++i)
-            {
-                Entry entry = new Entry(new Secret
-                {
-                    Name = "Hello world " + i,
-                    Digits = (byte)(4 + i),
-                    Period = (byte)(5 + i),
-                    Data = new string(Enumerable.Repeat(Chars, 32).Select(s => s[random.Next(s.Length)]).ToArray())
-                });
-                EntriesManager.Entries.Add(entry);
-                Database.AddEntry(entry.Secret).Wait();
-                entry.UpdateCode(timestamp);
-            }
-#endif
         }
 
         private void OnAppearing()
@@ -177,7 +151,6 @@ namespace Author.UI.ViewModels
                 {
                     Secret secret = Secret.Parse(await reader.ReadLineAsync());
                     EntriesManager.Entries.Add(new Entry(secret));
-                    await Database.AddEntry(secret);
                 }
                 catch (Exception)
                 { }
