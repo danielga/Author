@@ -4,6 +4,6 @@ namespace Author.UI.Messages
 {
     public class DeleteEntry
     {
-        public Entry Entry;
+        public MainPageEntryViewModel Entry;
     }
 }

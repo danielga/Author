@@ -2,18 +2,19 @@
 using Author.UI.Messages;
 using Author.UI.Pages;
 using Author.Utility;
+using Plugin.FilePicker;
+using Plugin.FilePicker.Abstractions;
 using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using System.IO;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Author.UI.ViewModels
 {
-    public class MainPageViewModel : INotifyPropertyChanged
+    public class MainPageViewModel
     {
         private static readonly EntryPage _entryPage = new EntryPage();
-        private static readonly EntryPageViewModel _entryPageVM = null;
+        private static readonly EntryPageViewModel _entryPageVM;
         private static readonly SettingsPage _settingsPage = new SettingsPage();
         private static readonly AboutPage _aboutPage = new AboutPage();
 
@@ -21,25 +22,16 @@ namespace Author.UI.ViewModels
 
         public EntryManager EntriesManager { get; } = new EntryManager();
 
-        public object SelectedItem
-        {
-            get => null;
-
-            set => OnPropertyChanged();
-        }
-
-        public Command AppearingCommand { get; private set; }
-        public Command DisappearingCommand { get; private set; }
-        public Command AddCommand { get; private set; }
-        public Command SettingsCommand { get; private set; }
-        public Command AboutCommand { get; private set; }
-        public Command ItemAppearingCommand { get; private set; }
-        public Command ItemDisappearingCommand { get; private set; }
-        public Command ItemEditCommand { get; private set; }
-        public Command ItemDeleteCommand { get; private set; }
-        public Command ItemTappedCommand { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        public Command AppearingCommand { get; }
+        public Command DisappearingCommand { get; }
+        public Command AddCommand { get; }
+        public Command ImportCommand { get; }
+        public Command ExportCommand { get; }
+        public Command SettingsCommand { get; }
+        public Command AboutCommand { get; }
+        public Command ItemAppearingCommand { get; }
+        public Command ItemDisappearingCommand { get; }
+        public Command ItemTappedCommand { get; }
 
         static MainPageViewModel()
         {
@@ -63,38 +55,13 @@ namespace Author.UI.ViewModels
             AppearingCommand = new Command(OnAppearing);
             DisappearingCommand = new Command(OnDisappearing);
             AddCommand = new Command(OnAddTapped);
+            ImportCommand = new Command(OnImportTapped);
+            ExportCommand = new Command(OnExportTapped);
             SettingsCommand = new Command(OnSettingsTapped);
             AboutCommand = new Command(OnAboutTapped);
             ItemAppearingCommand = new Command(OnItemAppearing);
             ItemDisappearingCommand = new Command(OnItemDisappearing);
-            ItemEditCommand = new Command(OnItemEdit);
-            ItemDeleteCommand = new Command(OnItemDelete);
             ItemTappedCommand = new Command(OnItemTapped);
-
-#if DEBUG
-            // Xamarin.Forms Previewer data
-            if (EntriesManager.Entries.Count != 0)
-            {
-                return;
-            }
-
-            const string Chars = Base32.ValidCharacters;
-
-            Random random = new Random();
-            long timestamp = Time.GetCurrent();
-            for (int i = 0; i < 5; ++i)
-            {
-                Entry entry = new Entry(new Secret
-                {
-                    Name = "Hello world " + i,
-                    Digits = (byte)(4 + i),
-                    Period = (byte)(5 + i),
-                    Data = new string(Enumerable.Repeat(Chars, 32).Select(s => s[random.Next(s.Length)]).ToArray())
-                });
-                EntriesManager.Entries.Add(entry);
-                entry.UpdateCode(timestamp);
-            }
-#endif
         }
 
         private void OnAppearing()
@@ -119,9 +86,9 @@ namespace Author.UI.ViewModels
             navPage?.PushAsync(page);
         }
 
-        public void SetAddEntryPageAsMainPage()
+        public void SetAddEntryPageAsMainPage(MainPageEntryViewModel entry = null)
         {
-            _entryPageVM.AddEntry();
+            _entryPageVM.AddEntry(entry);
             if (Device.RuntimePlatform == Device.macOS ||
                 Device.RuntimePlatform == Device.UWP)
             {
@@ -139,6 +106,72 @@ namespace Author.UI.ViewModels
             SetPage(_entryPage);
         }
 
+        private async void OnImportTapped()
+        {
+            try
+            {
+                FileData fileData = await CrossFilePicker.Current.PickFile();
+                if (fileData == null)
+                {
+                    return;
+                }
+
+                using (Stream stream = fileData.GetStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        await ImportStreamAsync(reader);
+                    }
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        public async Task ImportStreamAsync(StreamReader reader)
+        {
+            while (!reader.EndOfStream)
+            {
+                try
+                {
+                    Secret secret = Secret.Parse(await reader.ReadLineAsync());
+                    EntriesManager.Entries.Add(new MainPageEntryViewModel(secret));
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+        }
+
+        private async void OnExportTapped()
+        {
+            try
+            {
+                string path = Path.Combine(Xamarin.Essentials.FileSystem.CacheDirectory, "export.otp");
+
+                using (StreamWriter fileWriter = File.CreateText(path))
+                {
+                    foreach (MainPageEntryViewModel entry in EntriesManager.Entries)
+                    {
+                        await fileWriter.WriteLineAsync(entry.Secret.ToString());
+                    }
+                }
+
+                await Xamarin.Essentials.Share.RequestAsync(new Xamarin.Essentials.ShareFileRequest
+                {
+                    Title = "Author OTP export",
+                    File = new Xamarin.Essentials.ShareFile(path)
+                });
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
         private void OnSettingsTapped()
         {
             SetPage(_settingsPage);
@@ -153,25 +186,25 @@ namespace Author.UI.ViewModels
         private void OnItemAppearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            EntriesManager.OnEntryAppearing((Entry)e.Item);
+            EntriesManager.OnEntryAppearing((MainPageEntryViewModel)e.Item);
         }
 
         // This event is triggered when we navigate to another page
         private void OnItemDisappearing(object ev)
         {
             ItemVisibilityEventArgs e = (ItemVisibilityEventArgs)ev;
-            EntriesManager.OnEntryDisappearing((Entry)e.Item);
+            EntriesManager.OnEntryDisappearing((MainPageEntryViewModel)e.Item);
         }
 
         private void OnItemEdit(object context)
         {
-            _entryPageVM.EditEntry((Entry)context);
+            _entryPageVM.EditEntry((MainPageEntryViewModel)context);
             SetPage(_entryPage);
         }
 
         private void OnItemDelete(object context)
         {
-            EntriesManager.Entries.Remove((Entry)context);
+            EntriesManager.Entries.Remove((MainPageEntryViewModel)context);
 
             try
             {
@@ -187,7 +220,7 @@ namespace Author.UI.ViewModels
         private async void OnItemTapped(object context)
         {
             ItemTappedEventArgs args = (ItemTappedEventArgs)context;
-            Entry entry = (Entry)args.Item;
+            MainPageEntryViewModel entry = (MainPageEntryViewModel)args.Item;
             try
             {
                 await Clipboard.SetTextAsync(entry.Secret.Code);
@@ -198,11 +231,6 @@ namespace Author.UI.ViewModels
             }
             catch (NotImplementedException)
             { }
-        }
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

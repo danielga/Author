@@ -25,10 +25,15 @@ namespace Author.iOS
 
 		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
 		{
+			UI.Pages.App app = (UI.Pages.App)Xamarin.Forms.Application.Current;
 			if (url.Scheme == "otpauth")
 			{
-				UI.Pages.App app = Xamarin.Forms.Application.Current as UI.Pages.App;
-				app.HandleUriScheme(new System.Uri(url.ToString()));
+				app.OnUriRequestReceived(new System.Uri(url.ToString()));
+				return true;
+			}
+			else if (url.Scheme == "file")
+			{
+				app.OnFileRequestReceived(new System.Uri(url.ToString()));
 				return true;
 			}
 

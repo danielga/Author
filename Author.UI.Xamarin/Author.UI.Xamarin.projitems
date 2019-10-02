@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)UI\EntryManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)UI\Entry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\ViewModels\MainPageEntryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Factory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Messages\AddEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UI\Messages\DeleteEntry.cs" />
@@ -29,6 +29,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\MainPageEntry.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)UI\Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
@@ -60,5 +63,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)UI\Pages\MainPageEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="D:\Daniel\programming\Author\Author.UI.Xamarin\UI\Pages\MainPageEntry.xaml.cs">
+      <DependentUpon>MainPageEntry.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

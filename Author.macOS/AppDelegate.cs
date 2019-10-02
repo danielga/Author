@@ -46,26 +46,19 @@ namespace Author.macOS
 
         private void HandleUri(Uri uri)
         {
-            UI.Pages.App app = Xamarin.Forms.Application.Current as UI.Pages.App;
-            app.HandleUriScheme(uri);
+            UI.Pages.App app = (UI.Pages.App)Xamarin.Forms.Application.Current;
+            app.OnUriRequestReceived(uri);
         }
 
-        [Export("handleGetURLEvent:withReplyEvent:")]
-        private void HandleGetURLEvent(NSAppleEventDescriptor descriptor,
-            NSAppleEventDescriptor replyEvent)
+        public override void OpenUrls(NSApplication application, NSUrl[] urls)
         {
-            if (descriptor.EventClass != AEEventClass.Internet ||
-                descriptor.EventID != AEEventID.GetUrl)
+            // TODO: handle all URIs in case not finished initializing
+            for (int i = 0; i < urls.Length; ++i)
             {
-                return;
-            }
-
-            for (int i = 1; i <= descriptor.NumberOfItems; i++)
-            {
-                var innerDesc = descriptor.DescriptorAtIndex(i);
-                if (!string.IsNullOrEmpty(innerDesc.StringValue))
+                NSUrl url = urls[i];
+                if (url.Scheme == "otpauth")
                 {
-                    Uri uri = new Uri(innerDesc.StringValue);
+                    Uri uri = new Uri(url.AbsoluteString);
                     if (FinishedInitializing)
                     {
                         HandleUri(uri);
@@ -74,6 +67,10 @@ namespace Author.macOS
                     {
                         StartupUri = uri;
                     }
+                }
+                else if (url.Scheme == "file")
+                {
+                    // TODO: handle file opening
                 }
             }
         }

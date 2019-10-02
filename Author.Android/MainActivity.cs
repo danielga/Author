@@ -32,10 +32,14 @@ namespace Author.Android
 
         private void HandleUri(Intent intent)
         {
+            UI.Pages.App app = (UI.Pages.App)Xamarin.Forms.Application.Current;
             if (intent.Scheme == "otpauth")
             {
-                UI.Pages.App app = Xamarin.Forms.Application.Current as UI.Pages.App;
-                app.HandleUriScheme(new System.Uri(Intent.DataString));
+                app.OnUriRequestReceived(new System.Uri(Intent.DataString));
+            }
+            else if (intent.Scheme == "file")
+            {
+                app.OnFileRequestReceived(new System.Uri(Intent.DataString));
             }
         }
     }

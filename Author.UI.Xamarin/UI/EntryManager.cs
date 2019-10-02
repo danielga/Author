@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -11,43 +12,53 @@ namespace Author.UI
 {
     public class EntryManager
     {
-        public ObservableCollection<Entry> Entries { get; } = new ObservableCollection<Entry>();
+        public ObservableCollection<MainPageEntryViewModel> Entries { get; } = new ObservableCollection<MainPageEntryViewModel>();
 
         private readonly TimeSpan _updateInterval = TimeSpan.FromSeconds(1);
-        private readonly HashSet<Entry> _visibleEntries = new HashSet<Entry>();
+        private readonly HashSet<MainPageEntryViewModel> _visibleEntries = new HashSet<MainPageEntryViewModel>();
+        private readonly Database _database = new Database();
         private bool _shouldUpdate = false;
 
         public EntryManager()
         {
             Task.Run(async () =>
             {
-                List<Entry> entries = null;
-
                 try
                 {
-                    entries = new List<Entry>();
-                    foreach (Secret secret in await Database.GetEntries())
+                    await _database.Initialize();
+                    foreach (Secret secret in await _database.GetEntries())
                     {
-                        entries.Add(new Entry(secret));
-                    }
-                }
-                catch (Exception)
-                { }
-
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    if (entries != null && entries.Count != 0)
-                    {
-                        Entries.Clear();
-                        foreach (Entry entry in entries)
-                        {
-                            Entries.Add(entry);
-                        }
+                        Entries.Add(new MainPageEntryViewModel(secret));
                     }
 
-                    // TODO: Check if collection changes can happen before this is executed
                     Entries.CollectionChanged += OnEntriesChanged;
-                });
+
+#if DEBUG
+                    // Xamarin.Forms Previewer data
+                    if (Entries.Count != 0)
+                    {
+                        return;
+                    }
+
+                    Random random = new Random();
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        MainPageEntryViewModel entry = new MainPageEntryViewModel(new Secret
+                        {
+                            Name = "Hello world " + i,
+                            Digits = (byte) (4 + i),
+                            Period = (byte) (5 + i),
+                            Data = new string(Enumerable.Repeat(Base32.ValidCharacters, 32).Select(s => s[random.Next(s.Length)])
+                                .ToArray())
+                        });
+                        Entries.Add(entry);
+                    }
+#endif
+                }
+                catch
+                {
+                    // ignored
+                }
             });
         }
 
@@ -58,37 +69,43 @@ namespace Author.UI
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        foreach (Entry entry in e.NewItems)
+                        foreach (MainPageEntryViewModel entry in e.NewItems)
                         {
-                            await Database.AddEntry(entry.Secret);
-                        }
-
-                        break;
-
-                    case NotifyCollectionChangedAction.Replace:
-                        foreach (Entry entry in e.OldItems)
-                        {
-                            await Database.RemoveEntry(entry.Secret);
-                        }
-
-                        foreach (Entry entry in e.NewItems)
-                        {
-                            await Database.AddEntry(entry.Secret);
+                            await _database.AddEntry(entry.Secret);
                         }
 
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
-                        foreach (Entry entry in e.OldItems)
+                        foreach (MainPageEntryViewModel entry in e.OldItems)
                         {
-                            await Database.RemoveEntry(entry.Secret);
+                            await _database.RemoveEntry(entry.Secret);
                         }
 
                         break;
 
-                    case NotifyCollectionChangedAction.Reset:
-                        await Database.RemoveEntries();
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (MainPageEntryViewModel entry in e.OldItems)
+                        {
+                            await _database.RemoveEntry(entry.Secret);
+                        }
+
+                        foreach (MainPageEntryViewModel entry in e.NewItems)
+                        {
+                            await _database.AddEntry(entry.Secret);
+                        }
+
                         break;
+
+                    case NotifyCollectionChangedAction.Move:
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        await _database.RemoveEntries();
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             });
         }
@@ -96,7 +113,7 @@ namespace Author.UI
         private bool UpdateEntries()
         {
             long timestamp = Time.GetCurrent();
-            foreach (Entry entry in _visibleEntries)
+            foreach (MainPageEntryViewModel entry in _visibleEntries)
             {
                 entry.UpdateCode(timestamp);
             }
@@ -121,7 +138,7 @@ namespace Author.UI
             _shouldUpdate = false;
         }
 
-        public void OnEntryAppearing(Entry entry)
+        public void OnEntryAppearing(MainPageEntryViewModel entry)
         {
             if (entry == null)
             {
@@ -132,7 +149,7 @@ namespace Author.UI
             _visibleEntries.Add(entry);
         }
 
-        public void OnEntryDisappearing(Entry entry)
+        public void OnEntryDisappearing(MainPageEntryViewModel entry)
         {
             if (entry == null || (Device.RuntimePlatform == Device.UWP && !_shouldUpdate))
             {

@@ -12,8 +12,8 @@ namespace Author.UI.ViewModels
     {
         private bool _addingEntry = false;
 
-        private Entry _entry = null;
-        public Entry Entry
+        private MainPageEntryViewModel _entry = null;
+        public MainPageEntryViewModel Entry
         {
             get => _entry;
 
@@ -95,7 +95,7 @@ namespace Author.UI.ViewModels
 
         private void OnDisappearing()
         {
-            Entry = null;
+            _entry = null;
         }
 
         private void OnAcceptTapped()
@@ -121,7 +121,7 @@ namespace Author.UI.ViewModels
             }
             else
             {
-                Entry entry = Entry;
+                MainPageEntryViewModel entry = Entry;
                 entry.UpdateCode(Time.GetCurrent(), true);
 
                 MessagingCenter.Send(new EditEntry { Entry = entry }, "EditEntry");
@@ -133,14 +133,14 @@ namespace Author.UI.ViewModels
             }
         }
 
-        public void AddEntry()
+        public void AddEntry(MainPageEntryViewModel entry = null)
         {
             Title = "Add OTP entry";
-            Entry = new Entry();
+            Entry = entry ?? new MainPageEntryViewModel();
             _addingEntry = true;
         }
 
-        public void EditEntry(Entry entry)
+        public void EditEntry(MainPageEntryViewModel entry)
         {
             Title = "Edit OTP entry";
             Entry = entry;

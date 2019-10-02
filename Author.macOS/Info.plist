@@ -43,5 +43,42 @@
 	</array>
 	<key>NSUserNotificationAlertStyle</key>
 	<string>alert</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>otp</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Author OTP backup</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>xyz.metaman.author.macos.otp</string>
+			</array>
+		</dict>
+	</array>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeDescription</key>
+			<string>Author OTP backup</string>
+			<key>UTTypeIdentifier</key>
+			<string>xyz.metaman.author.macos.otp</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>otp</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

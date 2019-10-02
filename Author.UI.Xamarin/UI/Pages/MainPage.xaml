@@ -34,6 +34,30 @@
       </ToolbarItem.Icon>
     </ToolbarItem>
     <ToolbarItem
+      Text="Import..."
+      Order="Secondary"
+      Command="{Binding ImportCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_import_export" />
+          <On Platform="macOS" Value="ic_import_export.png" />
+          <On Platform="UWP" Value="Assets/ic_import_export.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
+    <ToolbarItem
+      Text="Export..."
+      Order="Secondary"
+      Command="{Binding ExportCommand}">
+      <ToolbarItem.Icon>
+        <OnPlatform x:TypeArguments="FileImageSource">
+          <On Platform="Android, iOS" Value="ic_import_export" />
+          <On Platform="macOS" Value="ic_import_export.png" />
+          <On Platform="UWP" Value="Assets/ic_import_export.png" />
+        </OnPlatform>
+      </ToolbarItem.Icon>
+    </ToolbarItem>
+    <ToolbarItem
       Text="Settings"
       Order="Secondary"
       Command="{Binding SettingsCommand}">
@@ -61,8 +85,8 @@
   <ListView
     HorizontalOptions="FillAndExpand"
     CachingStrategy="RecycleElement"
-    ItemsSource="{Binding EntriesManager.Entries}"
-    SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+    SelectionMode="None"
+    ItemsSource="{Binding EntriesManager.Entries}">
     <ListView.Behaviors>
       <behaviors:EventHandlerBehavior EventName="ItemAppearing">
         <behaviors:InvokeCommandAction Command="{Binding ItemAppearingCommand}" />
@@ -76,43 +100,7 @@
     </ListView.Behaviors>
     <ListView.ItemTemplate>
       <DataTemplate>
-        <ViewCell>
-          <ViewCell.ContextActions>
-            <MenuItem
-              Command="{Binding BindingContext.ItemEditCommand, Source={x:Reference Name=PageMain}}"
-              CommandParameter="{Binding}"
-              Text="Edit" />
-            <MenuItem
-              Command="{Binding BindingContext.ItemDeleteCommand, Source={x:Reference Name=PageMain}}"
-              CommandParameter="{Binding}"
-              Text="Delete"
-              IsDestructive="True" />
-          </ViewCell.ContextActions>
-          <Grid Padding="5">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Label
-              Grid.Row="0"
-              Grid.Column="0"
-              Text="{Binding Secret.Name}" />
-            <Label
-              Grid.Row="0"
-              Grid.Column="1"
-              Text="{Binding Secret.Code}" />
-            <ProgressBar
-              Grid.Row="1"
-              Grid.Column="0"
-              Grid.ColumnSpan="2"
-              Progress="{Binding Progress, Mode=TwoWay}"
-              pages:AttachedProperties.AnimatedProgress="{Binding AnimatedProgress, Mode=TwoWay}" />
-          </Grid>
-        </ViewCell>
+        <pages:MainPageEntry />
       </DataTemplate>
     </ListView.ItemTemplate>
   </ListView>
