@@ -95,7 +95,7 @@ namespace Author.UI.ViewModels
 
         private void OnDisappearing()
         {
-            Entry = null;
+            _entry = null;
         }
 
         private void OnAcceptTapped()
