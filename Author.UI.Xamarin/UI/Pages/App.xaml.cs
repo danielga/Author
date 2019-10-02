@@ -43,11 +43,13 @@ namespace Author.UI.Pages
                 Secret secret = Secret.Parse(uri.AbsoluteUri);
                 viewModel.SetAddEntryPageAsMainPage(new MainPageEntryViewModel(secret));
             }
-            catch (Exception)
-            { }
+            catch
+            {
+                // ignored
+            }
         }
 
-        public void OnFileRequestReceived(Uri path)
+        public async void OnFileRequestReceived(Uri path)
         {
             NavigationPage navPage = MainPage as NavigationPage;
             MainPageViewModel viewModel = navPage?.CurrentPage.BindingContext as MainPageViewModel;
@@ -60,11 +62,13 @@ namespace Author.UI.Pages
             {
                 using (StreamReader reader = File.OpenText(path.AbsolutePath))
                 {
-                    viewModel.ImportStreamAsync(reader);
+                    await viewModel.ImportStreamAsync(reader);
                 }
             }
-            catch (Exception)
-            { }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

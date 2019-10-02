@@ -6,6 +6,7 @@ using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Author.UI.ViewModels
@@ -119,15 +120,17 @@ namespace Author.UI.ViewModels
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
-                        ImportStreamAsync(reader);
+                        await ImportStreamAsync(reader);
                     }
                 }
             }
-            catch (Exception)
-            { }
+            catch
+            {
+                // ignored
+            }
         }
 
-        public async void ImportStreamAsync(StreamReader reader)
+        public async Task ImportStreamAsync(StreamReader reader)
         {
             while (!reader.EndOfStream)
             {
@@ -136,8 +139,10 @@ namespace Author.UI.ViewModels
                     Secret secret = Secret.Parse(await reader.ReadLineAsync());
                     EntriesManager.Entries.Add(new MainPageEntryViewModel(secret));
                 }
-                catch (Exception)
-                { }
+                catch
+                {
+                    // ignored
+                }
             }
         }
 
@@ -161,8 +166,10 @@ namespace Author.UI.ViewModels
                     File = new Xamarin.Essentials.ShareFile(path)
                 });
             }
-            catch (Exception)
-            { }
+            catch
+            {
+                // ignored
+            }
         }
 
         private void OnSettingsTapped()
