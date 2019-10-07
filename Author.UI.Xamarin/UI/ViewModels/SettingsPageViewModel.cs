@@ -15,10 +15,16 @@ namespace Author.UI.ViewModels
         void OnAcceptTapped()
         {
             // Save settings
-            Notification.Create("Saved settings")
-                .SetDuration(TimeSpan.FromSeconds(3))
-                .SetPosition(Notification.Position.Bottom)
-                .Show();
+
+            try
+            {
+                Notification.Create("Saved settings")
+                    .SetDuration(TimeSpan.FromSeconds(3))
+                    .SetPosition(Notification.Position.Bottom)
+                    .Show();
+            }
+            catch
+            { }
         }
     }
 }

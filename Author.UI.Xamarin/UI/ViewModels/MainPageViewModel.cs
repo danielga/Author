@@ -213,7 +213,7 @@ namespace Author.UI.ViewModels
                     .SetPosition(Notification.Position.Bottom)
                     .Show();
             }
-            catch (NotImplementedException)
+            catch
             { }
         }
 
@@ -229,7 +229,7 @@ namespace Author.UI.ViewModels
                     .SetPosition(Notification.Position.Bottom)
                     .Show();
             }
-            catch (NotImplementedException)
+            catch
             { }
         }
     }
