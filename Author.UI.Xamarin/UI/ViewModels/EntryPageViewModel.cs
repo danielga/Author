@@ -103,10 +103,16 @@ namespace Author.UI.ViewModels
             if (string.IsNullOrEmpty(Entry.Secret.Name) ||
                 string.IsNullOrEmpty(Entry.Secret.Data))
             {
-                Notification.Create("Detected invalid properties for the entry")
-                    .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Notification.Position.Bottom)
-                    .Show();
+                try
+                {
+                    Notification.Create("Detected invalid properties for the entry")
+                        .SetDuration(TimeSpan.FromSeconds(3))
+                        .SetPosition(Notification.Position.Bottom)
+                        .Show();
+                }
+                catch
+                { }
+
                 return;
             }
 
@@ -114,10 +120,15 @@ namespace Author.UI.ViewModels
             {
                 MessagingCenter.Send(new AddEntry { Entry = Entry }, "AddEntry");
 
-                Notification.Create("Added new entry")
-                    .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Notification.Position.Bottom)
-                    .Show();
+                try
+                {
+                    Notification.Create("Added new entry")
+                        .SetDuration(TimeSpan.FromSeconds(3))
+                        .SetPosition(Notification.Position.Bottom)
+                        .Show();
+                }
+                catch
+                { }
             }
             else
             {
@@ -126,10 +137,15 @@ namespace Author.UI.ViewModels
 
                 MessagingCenter.Send(new EditEntry { Entry = entry }, "EditEntry");
 
-                Notification.Create("Saved edited entry")
-                    .SetDuration(TimeSpan.FromSeconds(3))
-                    .SetPosition(Notification.Position.Bottom)
-                    .Show();
+                try
+                {
+                    Notification.Create("Saved edited entry")
+                        .SetDuration(TimeSpan.FromSeconds(3))
+                        .SetPosition(Notification.Position.Bottom)
+                        .Show();
+                }
+                catch
+                { }
             }
         }
 
