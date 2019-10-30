@@ -24,7 +24,7 @@ namespace Author.OTP
             {
                 if (value == Guid.Empty)
                 {
-                    throw new ArgumentException("Invalid identifier");
+                    //throw new ArgumentException("Invalid identifier");
                 }
 
                 if (value != _identifier)
@@ -44,7 +44,7 @@ namespace Author.OTP
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException("Invalid name");
+                    //throw new ArgumentException("Invalid name");
                 }
 
                 if (value != _name)
@@ -64,7 +64,7 @@ namespace Author.OTP
             {
                 if (string.IsNullOrEmpty(value.Name))
                 {
-                    throw new ArgumentException("Invalid type");
+                    //throw new ArgumentException("Invalid type");
                 }
 
                 if (value != _type)
@@ -85,7 +85,7 @@ namespace Author.OTP
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException("Invalid issuer");
+                    //throw new ArgumentException("Invalid issuer");
                 }
 
                 if (value != _issuer)
@@ -105,7 +105,7 @@ namespace Author.OTP
             {
                 if (string.IsNullOrEmpty(value.Name))
                 {
-                    throw new ArgumentException("Invalid algorithm");
+                    //throw new ArgumentException("Invalid algorithm");
                 }
 
                 if (value != _algorithm)
@@ -125,7 +125,7 @@ namespace Author.OTP
             {
                 if (value < 4 || value > 8)
                 {
-                    throw new ArgumentException("Invalid number of digits (must be between 4 and 8)");
+                    //throw new ArgumentException("Invalid number of digits (must be between 4 and 8)");
                 }
 
                 if (value != _digits)
@@ -160,7 +160,7 @@ namespace Author.OTP
             {
                 if (value < 5 || value > 60)
                 {
-                    throw new ArgumentException("Invalid period (must be between 5 and 60)");
+                    //throw new ArgumentException("Invalid period (must be between 5 and 60)");
                 }
 
                 if (value != _period)
@@ -180,7 +180,7 @@ namespace Author.OTP
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException("Invalid secret data");
+                    //throw new ArgumentException("Invalid secret data");
                 }
 
                 if (value != _data)
