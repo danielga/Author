@@ -41,7 +41,7 @@ namespace Author.UI.ViewModels
         {
             MessagingCenter.Subscribe<AddEntry>(this, "AddEntry", msg =>
             {
-                EntriesManager.Entries.Add(msg.Entry);
+                EntriesManager.Add(msg.Entry);
                 GoToPreviousPage();
             });
 
@@ -136,7 +136,7 @@ namespace Author.UI.ViewModels
                 try
                 {
                     Secret secret = Secret.Parse(await reader.ReadLineAsync());
-                    EntriesManager.Entries.Add(new MainPageEntryViewModel(secret));
+                    EntriesManager.Add(new MainPageEntryViewModel(secret));
                 }
                 catch
                 {
@@ -203,7 +203,7 @@ namespace Author.UI.ViewModels
 
         private void OnItemDelete(object context)
         {
-            EntriesManager.Entries.Remove((MainPageEntryViewModel)context);
+            EntriesManager.Remove((MainPageEntryViewModel)context);
 
             try
             {
