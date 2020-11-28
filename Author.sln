@@ -26,6 +26,7 @@ Global
 		Author.UI.Xamarin\Author.UI.Xamarin.projitems*{36f58bd1-9ea1-4d40-9cda-9893f07ab65b}*SharedItemsImports = 13
 		Author.UI.Xamarin\Author.UI.Xamarin.projitems*{4f3ac2a9-539a-4a30-a2b1-0b0fd87dfa0f}*SharedItemsImports = 4
 		Author\Author.projitems*{4f3ac2a9-539a-4a30-a2b1-0b0fd87dfa0f}*SharedItemsImports = 4
+		Author\Author.projitems*{639d796e-fb9a-4211-b865-aac01981df05}*SharedItemsImports = 5
 		Author\Author.projitems*{7458feb6-328f-4b02-96da-afd2009424ac}*SharedItemsImports = 13
 		Author.UI.Xamarin\Author.UI.Xamarin.projitems*{9886c01e-11eb-4467-931c-b4e58c9bef42}*SharedItemsImports = 4
 		Author\Author.projitems*{9886c01e-11eb-4467-931c-b4e58c9bef42}*SharedItemsImports = 4
