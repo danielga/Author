@@ -14,25 +14,21 @@ namespace Author.Android
         MainLauncher = true,
         NoHistory = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    [IntentFilter(new[] { Intent.ActionView },
+    [IntentFilter(new[] { Intent.ActionView, Intent.ActionSend, Intent.ActionSendMultiple },
         Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
         Label = "@string/application_name",
         Icon = "@drawable/icon",
-        DataScheme = "otpauth")]
-    [IntentFilter(new[] { Intent.ActionView },
+        DataScheme = "otpauth",
+        DataMimeType = "*/*",
+        DataHost = "*")]
+    [IntentFilter(new[] { Intent.ActionView, Intent.ActionSend, Intent.ActionSendMultiple },
         Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
         Label = "@string/application_name",
         Icon = "@drawable/icon",
         DataSchemes = new[] { "file", "content" },
         DataMimeType = "*/*",
-        DataPathPattern = ".*\\.otp")]
-    [IntentFilter(new[] { Intent.ActionSend },
-        Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
-        Label = "@string/application_name",
-        Icon = "@drawable/icon",
-        DataSchemes = new[] { "file", "content" },
-        DataMimeType = "*/*",
-        DataPathPattern = ".*\\.otp")]
+        DataPathPattern = ".*\\.otp",
+        DataHost = "*")]
     public class SplashActivity : AppCompatActivity
     {
         protected override void OnCreate(Bundle bundle)
@@ -41,7 +37,10 @@ namespace Author.Android
 
             Intent intent = new Intent(this, typeof(MainActivity));
 
-            if (Intent?.Data != null)
+            if ((Intent.Action == Intent.ActionView ||
+                Intent.Action == Intent.ActionSend ||
+                Intent.Action == Intent.ActionSendMultiple) &&
+                Intent?.Data != null)
             {
                 try
                 {
