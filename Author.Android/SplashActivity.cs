@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using Android.Support.V7.App;
+using AndroidX.AppCompat.App;
 using Android.Content;
 using Android.Net;
 using System.IO;
@@ -69,6 +69,12 @@ namespace Author.Android
 
             StartActivity(intent);
             Finish();
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

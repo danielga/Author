@@ -1,12 +1,11 @@
-﻿using Author.OTP;
+using Author.OTP;
 using Author.UI.Messages;
 using Author.UI.Pages;
 using Author.Utility;
-using Plugin.FilePicker;
-using Plugin.FilePicker.Abstractions;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Author.UI.ViewModels
@@ -110,13 +109,13 @@ namespace Author.UI.ViewModels
         {
             try
             {
-                FileData fileData = await CrossFilePicker.Current.PickFile();
+                FileResult fileData = await FilePicker.PickAsync();
                 if (fileData == null)
                 {
                     return;
                 }
 
-                using (Stream stream = fileData.GetStream())
+                using (Stream stream = await fileData.OpenReadAsync())
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
@@ -223,7 +222,7 @@ namespace Author.UI.ViewModels
             MainPageEntryViewModel entry = (MainPageEntryViewModel)args.Item;
             try
             {
-                await Clipboard.SetTextAsync(entry.Secret.Code);
+                await Utility.Clipboard.SetTextAsync(entry.Secret.Code);
                 Notification.Create("Copied OTP")
                     .SetDuration(TimeSpan.FromSeconds(3))
                     .SetPosition(Notification.Position.Bottom)

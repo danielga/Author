@@ -42,5 +42,11 @@ namespace Author.Android
                 app.OnFileRequestReceived(new System.Uri(Intent.DataString));
             }
         }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }
