@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Author.ViewModels"
+             x:Class="Author.Views.EntryPage"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <vm:TypeToIndexConverter x:Key="TypeToIndexConverter" />
+            <vm:DigitsToIndexConverter x:Key="DigitsToIndexConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.BindingContext>
+        <vm:EntryPageViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Accept"
+                     Order="Primary"
+                     IconImageSource="{FontImage '&#xe876;', FontFamily='MaterialIconsRegular', Color=White}"
+                     Command="{Binding AcceptCommand}" />
+    </ContentPage.ToolbarItems>
+    <ScrollView>
+        <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
+            <Label Text="Type"
+                   Margin="5"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Center" />
+            <Picker Margin="5" SelectedIndex="{Binding Entry.Secret.Type, Converter={StaticResource TypeToIndexConverter}, Mode=TwoWay}">
+                <Picker.Items>
+                    <x:String>Hash based</x:String>
+                    <x:String>Time based</x:String>
+                    <x:String>Steam</x:String>
+                    <x:String>Blizzard App</x:String>
+                    <x:String>Authy</x:String>
+                </Picker.Items>
+            </Picker>
+            <Label Text="Name"
+                   Margin="5"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Center" />
+            <Entry Margin="5"
+                   HorizontalOptions="FillAndExpand"
+                   Placeholder="Name"
+                   Text="{Binding Entry.Secret.Name, Mode=TwoWay}" />
+            <Label Text="Shared secret"
+                   Margin="5"
+                   HorizontalOptions="Start" />
+            <Entry Margin="5"
+                   HorizontalOptions="FillAndExpand"
+                   Placeholder="Shared secret"
+                   Text="{Binding Entry.Secret.Data, Mode=TwoWay}" />
+            <Label Text="Code length"
+                   Margin="5"
+                   HorizontalOptions="Start" />
+            <Picker IsEnabled="{Binding LengthPickerEnabled}"
+                    Margin="5"
+                    SelectedIndex="{Binding Entry.Secret.Digits, Converter={StaticResource DigitsToIndexConverter}, Mode=TwoWay}">
+                <Picker.Items>
+                    <x:String>4</x:String>
+                    <x:String>5</x:String>
+                    <x:String>6</x:String>
+                    <x:String>7</x:String>
+                    <x:String>8</x:String>
+                </Picker.Items>
+            </Picker>
+            <Label Text="{Binding Entry.Secret.Period, StringFormat='Timer period: {0} seconds'}"
+                   Margin="5"
+                   HorizontalOptions="Start" />
+            <Slider IsEnabled="{Binding PeriodSliderEnabled}"
+                    Margin="5"
+                    Maximum="60"
+                    Minimum="5"
+                    HorizontalOptions="FillAndExpand"
+                    Value="{Binding Entry.Secret.Period, Mode=TwoWay}" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

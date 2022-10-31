@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Author.ViewModels"
+             x:Class="Author.Views.SettingsPage"
+             Title="Settings">
+    <ContentPage.BindingContext>
+        <vm:SettingsPageViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save settings"
+                     Order="Primary"
+                     IconImageSource="{FontImage '&#xe161;', FontFamily='MaterialIconsRegular', Color=White}"
+                     Command="{Binding AcceptCommand}" />
+    </ContentPage.ToolbarItems>
+</ContentPage>

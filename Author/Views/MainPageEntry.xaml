@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ViewCell xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+          xmlns:views="clr-namespace:Author.Views"
+          x:Class="Author.Views.MainPageEntry">
+    <ViewCell.ContextActions>
+        <MenuItem Command="{Binding EditCommand}"
+                  IconImageSource="{FontImage '&#xe3c9;', FontFamily='MaterialIconsRegular', Color=White}"
+                  Text="Edit" />
+        <MenuItem Command="{Binding DeleteCommand}"
+                  IconImageSource="{FontImage '&#xe872;', FontFamily='MaterialIconsRegular', Color=Red}"
+                  Text="Delete"
+                  IsDestructive="True" />
+    </ViewCell.ContextActions>
+    <Grid Padding="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               Text="{Binding Secret.Name}" />
+        <Label Grid.Row="0"
+               Grid.Column="1"
+               Text="{Binding Secret.Code}" />
+        <ProgressBar Grid.Row="1"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="2"
+                     Progress="{Binding Progress, Mode=TwoWay}"
+                     views:AttachedProperties.AnimatedProgressAnimationTime="{Binding AnimatedProgressAnimationTime}"
+                     views:AttachedProperties.AnimatedProgress="{Binding AnimatedProgress}" />
+    </Grid>
+</ViewCell>
